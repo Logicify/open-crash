@@ -18,17 +18,6 @@ public class HibernateUtil {
     }
 
     public static SessionFactory getSessionFactory() {
-        /*if (sessionFactory == null) {
-            try {
-                //creates the session factory from hibernate.cfg.xml
-                Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-                StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
-                sessionFactory = configuration.buildSessionFactory(builder.build());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }*/
-
         return sessionFactory;
     }
 

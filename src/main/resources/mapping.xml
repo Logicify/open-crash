@@ -1,0 +1,7 @@
+<mapping class="org.opencrash.domain_objects.Application"/>
+<mapping class="org.opencrash.domain_objects.Device"/>
+<mapping class="org.opencrash.domain_objects.Exception_class"/>
+<mapping class="org.opencrash.domain_objects.System"/>
+<mapping class="org.opencrash.domain_objects.User"/>
+<mapping class="org.opencrash.domain_objects.Obtained_exception"/>
+<mapping class="org.opencrash.domain_objects.Register_user"/>

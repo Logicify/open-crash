@@ -80,7 +80,4 @@ abstract class HibernateDAOIdentifiable<T extends IdentifiableEntity> extends Hi
             }
         }
     }
-
-
-
 }

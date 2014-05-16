@@ -1,8 +1,8 @@
 package org.opencrash.domain_objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Fong on 07.05.14.
@@ -12,6 +12,7 @@ import javax.persistence.Table;
 public class System extends IdentifiableEntity {
     private String name;
     private String version;
+    private Set<User> applicationuser = new HashSet<User>(0);
 
     @Column(name="name",length = 80,nullable = false)
     public String getName() {
@@ -29,5 +30,14 @@ public class System extends IdentifiableEntity {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    @OneToMany(mappedBy = "system", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public Set<User> getApplicationuser() {
+        return applicationuser;
+    }
+
+    public void setApplicationuser(Set<User> applicationusers) {
+        this.applicationuser = applicationusers;
     }
 }

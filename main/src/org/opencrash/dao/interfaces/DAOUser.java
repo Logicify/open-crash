@@ -1,6 +1,6 @@
 package org.opencrash.dao.interfaces;
 
-import org.opencrash.domain_objects.User;
+import org.opencrash.domain_objects.Register_user;
 
-public interface DAOUser extends DAOCRUD<User> {
+public interface DAOUser extends DAOCRUD<Register_user> {
 }
