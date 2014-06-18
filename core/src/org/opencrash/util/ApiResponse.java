@@ -2,7 +2,9 @@ package org.opencrash.util;
 
 
 import com.google.gson.Gson;
+import org.json.simple.JSONObject;
 import org.opencrash.domain_objects.ApiResponseObject;
+import org.opencrash.domain_objects.ApiResponseSuccessObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,8 +27,15 @@ public class ApiResponse {
         Gson gson = new Gson();
         Date date= new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("MM.dd.yyyy h:mm:ss a");
-        obj.setTimestamp(sdf.format(date));
-        responseJson =  gson.toJson(obj);
+        if(obj.isSuccess()){
+            ApiResponseSuccessObject successObject = new ApiResponseSuccessObject();
+            successObject.setSuccess(true);
+            successObject.setTimestamp(sdf.format(date));
+            responseJson = gson.toJson(successObject);
+        }else {
+            obj.setTimestamp(sdf.format(date));
+            responseJson =  gson.toJson(obj);
+        }
     }
 
     public String getResponseJson() {

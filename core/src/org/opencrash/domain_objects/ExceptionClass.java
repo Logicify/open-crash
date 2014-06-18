@@ -21,7 +21,7 @@ public class ExceptionClass extends IdentifiableEntity {
     public void setException_class(String exception_class) {
         this.exception_class = exception_class;
     }
-    @OneToMany(mappedBy = "exception_class", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "exceptionClass", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public Set<ObtainedException> getObtained_exception() {
         return obtained_exception;
     }

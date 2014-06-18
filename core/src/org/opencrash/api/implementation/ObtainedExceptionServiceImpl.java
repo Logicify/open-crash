@@ -23,8 +23,8 @@ public class ObtainedExceptionServiceImpl implements ObtainedExceptionService {
             logger.log(Level.SEVERE,"DB error:",e);
         }
     }
-    public List<Object> getExceptionByApplication(Integer app_id){
-        List<Object> obtained_exceptions = null;
+    public List<ObtainedException> getExceptionByApplication(Integer app_id){
+        List<ObtainedException> obtained_exceptions = null;
         try {
             obtained_exceptions =HibernateDAO.getInstance().DAOObtainedException().loadTopByApplicationId(app_id);
 
@@ -43,5 +43,14 @@ public class ObtainedExceptionServiceImpl implements ObtainedExceptionService {
             logger.log(Level.SEVERE,"DB error:",e);
         }
         return obtained_exceptions;
+    }
+    public Integer getCount(Integer applicationId, Integer exception_id){
+        Integer count= null;
+        try {
+            count = HibernateDAO.getInstance().DAOObtainedException().countAll(applicationId,exception_id);
+        }catch (Exception e){
+            logger.log(Level.SEVERE,"DB error:",e);
+        }
+        return  count;
     }
 }

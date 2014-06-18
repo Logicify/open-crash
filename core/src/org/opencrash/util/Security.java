@@ -109,4 +109,23 @@ public class Security {
         String token = (new BigInteger(messageDigest.digest())).toString(16);
         return token;
     }
+
+    public String getApplicationKey(String application_name, String application_version, String username, String name) {
+        String hash = null;
+        hash = hashAppKeyWithSalt(application_name, application_version, username, name);
+        return  hash;
+    }
+
+    private String hashAppKeyWithSalt(String application_name, String application_version, String username, String name) {
+        String salt = "Qfnjkpat18*k78an,as";
+        MessageDigest messageDigest=null;
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-1");
+            messageDigest.update((application_name+application_version+name+username+salt).getBytes());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        String appKey = (new BigInteger(messageDigest.digest())).toString(16).replaceAll("[.!@#$%^&*()_+-]","");
+        return appKey;
+    }
 }

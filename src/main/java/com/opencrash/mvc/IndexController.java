@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/")
-public class TestController {
+public class IndexController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String getRequest(ModelMap model,HttpServletRequest request) {
         HttpSession session = request.getSession();

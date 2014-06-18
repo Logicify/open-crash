@@ -4,8 +4,9 @@ $(".app_menu").click(function(){
         $(href).animate({height:0}, 0);
         $(".app_menu").removeClass("menu_active");
     }else{
+        var obj=$(href +" > div > ul");
         $(href).animate({
-            height: 120
+            height: obj.height()+20
         }, 0);
         $(".app_menu").addClass("menu_active");
     }

@@ -2,6 +2,7 @@ package com.opencrash.mvc;
 
 import org.opencrash.api.ObtainedExceptionService;
 import org.opencrash.api.implementation.ObtainedExceptionServiceImpl;
+import org.opencrash.domain_objects.ObtainedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +18,7 @@ import java.util.List;
 public class Ajax {
     @RequestMapping(value = "/getApplicationInfo",method = RequestMethod.GET, headers="Accept=application/json")
     public  @ResponseBody
-    List<Object> getTags(@RequestParam("app_id") int app_id) {
+    List<ObtainedException> getTags(@RequestParam("app_id") int app_id) {
         ObtainedExceptionService obtainedExceptionService = new ObtainedExceptionServiceImpl();
        return obtainedExceptionService.getExceptionByApplication(app_id);
     }

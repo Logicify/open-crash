@@ -10,6 +10,7 @@ import java.util.List;
 public interface ObtainedExceptionService {
 
     public void newObtainedException(ObtainedException obtained_exception);
-    public List<Object> getExceptionByApplication(Integer app_id);
+    public List<ObtainedException> getExceptionByApplication(Integer app_id);
     public List<ObtainedException> getExceptionsByAppIdAndExId(Integer app_id,Integer exc_id,Integer offset);
+    public Integer getCount(Integer applicationId, Integer exception_id);
 }

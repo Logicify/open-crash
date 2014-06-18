@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity
 @Table(name="obtained_exceptions")
 public class ObtainedException extends IdentifiableEntity{
-    private ExceptionClass exception_class;
+    private ExceptionClass exceptionClass;
     private String backtrace;
     private String message;
     private Application application;
@@ -26,12 +26,12 @@ public class ObtainedException extends IdentifiableEntity{
 
     @ManyToOne
     @JoinColumn(name="exception_class_id")
-    public ExceptionClass getException_class() {
-        return exception_class;
+    public ExceptionClass getExceptionClass() {
+        return exceptionClass;
     }
 
-    public void setException_class(ExceptionClass exception_class) {
-        this.exception_class = exception_class;
+    public void setExceptionClass(ExceptionClass exception_class) {
+        this.exceptionClass = exception_class;
     }
 
     @Column(name="backtrace",columnDefinition = "text")

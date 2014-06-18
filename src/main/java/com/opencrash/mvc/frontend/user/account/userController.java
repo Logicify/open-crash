@@ -40,22 +40,21 @@ public class userController {
             authUser = new AuthUser();
         if (authUser.IsLogin().equals("false"))
             return "redirect:/login";
-        applicationService.loadApplicationByUser(authUser.getUser_id());
-        List<Application> apps = applicationService.loadApplicationByUser(authUser.getUser_id());
-        model.put("apps",apps);
         return "user/myaccount";
     }
 
    @RequestMapping(value = "/myaccount/applications/add",method = RequestMethod.GET)
-    public  String getAddNewApplication(HttpServletRequest request){
+    public  String getAddNewApplication(HttpServletRequest request,ModelMap model){
        HttpSession session = request.getSession();
        AuthUser authUser = (AuthUser) session.getAttribute("userInfo");
        if (authUser == null)
            authUser = new AuthUser();
        if (authUser.IsLogin().equals("false"))
            return "redirect:/login";
+       model.put("mobileSystems",systemService.loadAll());
        return "user/application_add";
     }
+
     @RequestMapping(value = "/myaccount/applications/add",method = RequestMethod.POST)
     public String postAddNewApplication(HttpServletRequest request, final RedirectAttributes redirectAttrs){
         HttpSession session = request.getSession();
@@ -70,8 +69,6 @@ public class userController {
         String application_version = request.getParameter("app_version");
         Integer system_id = Integer.parseInt(request.getParameter("mobileSystem"));
         MobileSystem system = systemService.getById(system_id);
-        //MobileSystem system = new MobileSystem();
-        //system.setId(1);
         Map<String,String> errors = new HashMap<String, String>();
         ApplicationValidator applicationValidator = new ApplicationValidator(application_name,application_version,system);
         applicationValidator.validate();
@@ -81,7 +78,7 @@ public class userController {
             UserService userService = new UserServiceImpl();
             Register_user user = userService.getByid(authUser.getUser_id());
             application.setRegister_user(user);
-            application.setApplication_key(security.getHashKey(application_name,application_version,user.getUsername()));
+            application.setApplication_key(security.getApplicationKey(application_name, application_version, user.getUsername(), system.getName()));
             applicationService.newApplication(application);
             return "redirect:/myaccount";
         }else {
@@ -103,7 +100,7 @@ public class userController {
         if(application ==null)
             return "redirect:/myaccount";
         ObtainedExceptionService obtainedExceptionService = new ObtainedExceptionServiceImpl();
-        List<Object> obtained_exceptions = obtainedExceptionService.getExceptionByApplication(applicationId);
+        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionByApplication(applicationId);
         model.put("applicationId",applicationId);
         model.put("top_exceptions",obtained_exceptions);
         return "user/application";
@@ -118,8 +115,11 @@ public class userController {
         if (authUser.IsLogin().equals("false"))
             return "redirect:/login";
         ObtainedExceptionService obtainedExceptionService = new ObtainedExceptionServiceImpl();
+        Integer page_count = obtainedExceptionService.getCount(applicationId,exception_id);
         List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionsByAppIdAndExId(applicationId,exception_id,0);
         model.put("exceptions",obtained_exceptions);
+        model.put("count",page_count);
+        model.put("page",1);
         return "user/exceptions-list";
     }
 
@@ -134,7 +134,11 @@ public class userController {
         ObtainedExceptionService obtainedExceptionService = new ObtainedExceptionServiceImpl();
         int offset = (page - 1) * 10;
         List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionsByAppIdAndExId(applicationId,exception_id,offset);
+        Integer page_count = obtainedExceptionService.getCount(applicationId,exception_id);
         model.put("exceptions",obtained_exceptions);
+        model.put("exceptions",obtained_exceptions);
+        model.put("count",page_count);
+        model.put("page",page);
         return "user/exceptions-list";
     }
 
@@ -149,6 +153,8 @@ public class userController {
         Application application = applicationService.getById(application_id);
         Integer user_id =application.getRegister_user().getId();
         if(application != null && user_id.equals(authUser.getUser_id())){
+            List<MobileSystem> mobileSystem = systemService.loadAll();
+            model.put("systems",mobileSystem);
             model.put("application",application);
             return "/user/application-edit";
         }
@@ -156,7 +162,6 @@ public class userController {
             return "redirect:/myaccount";
         }
     }
-
     @RequestMapping(value = "/myaccount/application/edit/{application_id}",method = RequestMethod.POST)
     public String postEditApp(ModelMap model,@PathVariable("application_id") Integer application_id,HttpServletRequest request,final RedirectAttributes redirectAttrs){
         HttpSession session = request.getSession();
@@ -171,8 +176,8 @@ public class userController {
             Map<String,String> errors;
             String app_name = request.getParameter("app_name");
             String app_version = request.getParameter("app_version");
-            String system_id = request.getParameter("system_id");
-            MobileSystem system= new MobileSystem();
+            Integer system_id = Integer.parseInt(request.getParameter("mobileSystem"));
+            MobileSystem system= systemService.getById(system_id);
             ApplicationValidator applicationValidator = new ApplicationValidator(app_name,app_version,system);
             applicationValidator.validate();
             if(applicationValidator.valid()){

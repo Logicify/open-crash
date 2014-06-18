@@ -6,6 +6,7 @@ import org.opencrash.domain_objects.MobileSystem;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +37,16 @@ public class SystemServiceImpl implements SystemService{
             logger.log(Level.SEVERE,"DB error",e);
         }
         return mobileSystem;
+    }
+
+    public List<MobileSystem> loadAll(){
+        List<MobileSystem> list = null;
+        try{
+            list = HibernateDAO.getInstance().DAOSystem().getAll();
+        }catch (SQLException e){
+            logger.log(Level.SEVERE,"DB error",e);
+        }
+        return list;
     }
 
 }

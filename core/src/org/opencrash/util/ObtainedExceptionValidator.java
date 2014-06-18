@@ -103,7 +103,7 @@ public class ObtainedExceptionValidator extends Validator {
             exception.setUid(object.getUid());
             exception.setApplication(application);
             exception.setMessage(message);
-            exception.setException_class(exceptionClass);
+            exception.setExceptionClass(exceptionClass);
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             Date date = new Date();
             exception.setCreate_at(date);

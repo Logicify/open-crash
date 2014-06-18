@@ -59,7 +59,7 @@ public class RequestController {
             }
         }else {
             obj.setSuccess(false);
-            apiResponseErrorsSet.add(new ApiResponseErrors(6, "Wrong application access key"));
+            apiResponseErrorsSet.add(new ApiResponseErrors(6, "Wrong access key"));
             logger.log(Level.SEVERE, "Bad request,wrong access key");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
