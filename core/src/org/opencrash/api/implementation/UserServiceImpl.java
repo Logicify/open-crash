@@ -5,6 +5,7 @@ import org.opencrash.dao.HibernateDAO;
 import org.opencrash.domain_objects.Register_user;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,5 +58,14 @@ public class UserServiceImpl implements UserService {
         }catch (SQLException e) {
             logger.log(Level.SEVERE, "DB error:", e);
         }
+    }
+    public List<Register_user> loadAll(){
+        List<Register_user> users = null;
+        try {
+           users = HibernateDAO.getInstance().DAOUser().getAll();
+        }catch (SQLException e) {
+            logger.log(Level.SEVERE, "DB error:", e);
+        }
+        return users;
     }
 }

@@ -68,3 +68,12 @@ margin:0 auto;
 .login button{
     margin-left: 30%;
 }
+.hidden{
+    display: none;
+}
+.filter_value{
+    width: 30%;
+}
+.filter {
+    width: 100%;
+}

@@ -12,8 +12,8 @@
             <thead>
             <tr>
                 <td>Date</td>
+                <td>Class</td>
                 <td>Message</td>
-                <td>Backtrace</td>
             </tr>
             </thead>
             <tbody>
@@ -22,11 +22,11 @@
                 if(obtained_exceptions != null){
                     for (int i = 0; i < obtained_exceptions.size(); i++) {
             %>
-            <tr>
-                <td><%=obtained_exceptions.get(i).getCreate_at()%></td>
-                <td><%=obtained_exceptions.get(i).getMessage()%></td>
-                <td><%=obtained_exceptions.get(i).getBacktrace()%></td>
-            </tr>
+                <tr>
+                    <td><%=obtained_exceptions.get(i).getCreate_at()%></td>
+                    <td><a href="/myaccount/application/exception/view/<%=obtained_exceptions.get(1).getId()%>"><%=obtained_exceptions.get(i).getExceptionClass().getException_class()%></a></td>
+                    <td><%=obtained_exceptions.get(i).getMessage()%></td>
+                </tr>
             <%}}%>
             </tbody>
         </table>

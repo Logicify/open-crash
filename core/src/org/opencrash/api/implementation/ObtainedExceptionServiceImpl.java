@@ -53,4 +53,22 @@ public class ObtainedExceptionServiceImpl implements ObtainedExceptionService {
         }
         return  count;
     }
+    public ObtainedException getForView(Integer obtained_exception_id){
+        ObtainedException obtainedException = null;
+        try {
+               obtainedException = HibernateDAO.getInstance().DAOObtainedException().getForView(obtained_exception_id);
+        }catch (Exception e){
+            logger.log(Level.SEVERE,"DB error:",e);
+        }
+        return obtainedException;
+    }
+    public List<ObtainedException> loadAllExceptionClasses(){
+        List<ObtainedException> obtainedExceptions = null;
+        try {
+            obtainedExceptions = HibernateDAO.getInstance().DAOObtainedException().loadAllExceptionClasses();
+        }catch (Exception e){
+            logger.log(Level.SEVERE,"DB error:",e);
+        }
+        return obtainedExceptions;
+    }
 }

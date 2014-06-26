@@ -137,5 +137,6 @@ public class ObtainedException extends IdentifiableEntity{
     public void setDevice(Device device) {
         this.device = device;
     }
+
 }
 

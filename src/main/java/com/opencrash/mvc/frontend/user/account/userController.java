@@ -30,6 +30,8 @@ public class userController {
     @Autowired
     private  ApplicationService applicationService;
     @Autowired
+    private  ObtainedExceptionService obtainedExceptionService;
+    @Autowired
     private SystemService systemService;
 
     @RequestMapping(value="/myaccount",method = RequestMethod.GET)
@@ -195,5 +197,38 @@ public class userController {
         }
         else
             return "redirect:/myaccount";
+    }
+
+    @RequestMapping(value = "/myaccount/application/exception/view/{obtained_exception}")
+    public String viewException(@PathVariable("obtained_exception") Integer obtained_exception_id,HttpServletRequest request,ModelMap model){
+        HttpSession session = request.getSession();
+        AuthUser authUser = (AuthUser) session.getAttribute("userInfo");
+        if (authUser == null)
+            authUser = new AuthUser();
+        if (authUser.IsLogin().equals("false"))
+            return "redirect:/login";
+        ObtainedException obtainedException = obtainedExceptionService.getForView(obtained_exception_id);
+        Integer user_id = obtainedException.getApplication().getRegister_user().getId();
+        if(user_id.equals(authUser.getUser_id())){
+            model.put("exception",obtainedException);
+            return "/user/exception_view";
+        }
+        else
+            return "redirect:/login";
+    }
+
+    @RequestMapping(value = "/filter")
+    public String filter(HttpServletRequest request,ModelMap model){
+        HttpSession session = request.getSession();
+        AuthUser authUser = (AuthUser) session.getAttribute("userInfo");
+        if (authUser == null)
+            authUser = new AuthUser();
+        if (authUser.IsLogin().equals("false"))
+            return "redirect:/login";
+        List<Application> applications = applicationService.loadApplicationByUser(authUser.getUser_id());
+        List<ObtainedException> exceptionClasses =obtainedExceptionService.loadAllExceptionClasses();
+        model.put("applications_for_filter",applications);
+        model.put("exceptionClasses",exceptionClasses);
+        return "user/filters";
     }
 }

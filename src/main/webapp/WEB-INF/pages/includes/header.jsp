@@ -15,6 +15,17 @@
     <![endif]-->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/extend.css" rel="stylesheet">
+    <link href="/css/jquery.dataTables.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bootstrap-multiselect.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/pickmeup.css" type="text/css"/>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.dataTables.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/bootstrap-multiselect.js"></script>
+    <script type="text/javascript" src="/js/jquery.pickmeup.js"></script>
+    <script type="text/javascript" src="/js/jquery.twbsPagination.js"></script>
+
 </head>
 <body data-twttr-rendered="true" cz-shortcut-listen="true" id="top" data-spy="scroll" data-target=".subnav" data-offset="80">
 <div class="navbar navbar-fixed-top">

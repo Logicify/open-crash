@@ -1,4 +1,5 @@
 </div>
+<script src="/js/custom.js" type="text/javascript"></script>
 <footer id="footer">
     <p class="pull-right"><a href="#top">Back to top</a></p>
     <div class="links">
@@ -8,9 +9,6 @@
     </div>
 </footer>
 </div>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/custom.js" type="text/javascript"></script>
 <script>
     function menuShow(){
         var menu =$(".dropdown-menu-login");

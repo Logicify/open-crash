@@ -24,7 +24,7 @@
                     Object[] row = (Object[])iterator.next();
                 %>
                 <tr>
-                    <td><a href="/myaccount/application/<%=request.getAttribute("applicationId")%>/exception/list/<%=row[1]%>"><%=row[2]%></a></td>
+                    <td><a href="/myaccount/application/<%=request.getAttribute("applicationsId")%>/exception/list/<%=row[1]%>"><%=row[2]%></a></td>
                     <td><%=row[0]%></td>
                 </tr>
             <%}%>

@@ -1,0 +1,20 @@
+{
+    "filters":[
+        {
+            "filter":"exceptionClass",
+            "value":"1"
+        },{
+            "filter":"date",
+            "operation":"from_to",
+            "from":"18-01-2014",
+            "to":"20-01-2014"
+        },{
+            "filter":"user",
+            "user":"1"
+        },{
+            "filter":"application",
+            "application":"1"
+        }
+    ],
+    "group":["date","user"]
+}

@@ -1,5 +1,7 @@
 package org.opencrash.domain_objects;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,9 +11,10 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "exception_classes")
+
 public class ExceptionClass extends IdentifiableEntity {
     private String exception_class;
-    private Set<ObtainedException>obtained_exception = new HashSet<ObtainedException>(0);
+    private Set<ObtainedException> obtained_exception = new HashSet<ObtainedException>(0);
 
     @Column(name = "exception_class",length = 40,nullable = false,unique = true)
     public String getException_class() {
@@ -22,6 +25,7 @@ public class ExceptionClass extends IdentifiableEntity {
         this.exception_class = exception_class;
     }
     @OneToMany(mappedBy = "exceptionClass", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     public Set<ObtainedException> getObtained_exception() {
         return obtained_exception;
     }

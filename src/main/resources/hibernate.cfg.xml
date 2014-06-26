@@ -19,3 +19,6 @@
         &classMappings;
     </session-factory>
 </hibernate-configuration>
+
+
+

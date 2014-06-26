@@ -13,4 +13,6 @@ public interface ObtainedExceptionService {
     public List<ObtainedException> getExceptionByApplication(Integer app_id);
     public List<ObtainedException> getExceptionsByAppIdAndExId(Integer app_id,Integer exc_id,Integer offset);
     public Integer getCount(Integer applicationId, Integer exception_id);
+    public ObtainedException getForView(Integer obtained_exception_id);
+    public List<ObtainedException> loadAllExceptionClasses();
 }
