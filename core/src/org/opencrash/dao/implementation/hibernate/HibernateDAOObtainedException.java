@@ -2,6 +2,8 @@ package org.opencrash.dao.implementation.hibernate;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.opencrash.dao.interfaces.DAOObtainedException;
@@ -91,38 +93,22 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
         return count;
     }
 
-    public List<ObtainedException> loadByFilters(FilterObject obj,Integer offset) {
+    public List<ObtainedException> loadByFilters(FilterObject obj,Integer offset,String sorting_field, String sorting_type) {
         List<ObtainedException> obtained_exceptions = null;
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            Criteria filter =session.createCriteria(getInnerClass());
+            Criteria filter =session.createCriteria(getInnerClass())
+                                    .createAlias("exceptionClass", "exc")
+                                    .createAlias("application", "app");
             if(obj.isClassFilter()){
-                filter.createAlias("exceptionClass", "exc").add(Restrictions.in("exc.id", obj.getClassesId()));
-                if(obj.isGrouping()){
-                    if(obj.getGroup_by().indexOf("exceptionClass")!=-1){
-                        filter.setProjection(Projections.projectionList()
-                                .add(Projections.groupProperty("exc.id"), "class"));
-                    }
-                }
+                filter.add(Restrictions.in("exc.id", obj.getClassesId()));
             }
             if(obj.isApplicationFilter()){
-                filter.createAlias("application","app");
                 filter.add(Restrictions.in("app.id", obj.getApplicationsId()));
-                if(obj.isGrouping()){
-                    if(obj.getGroup_by().indexOf("application")!=-1){
-                        filter.setProjection(Projections.groupProperty("app.id"));
-                        filter.setProjection(Projections.groupProperty("app.id"));
-                    }
-                }
             }
             if(obj.isUserFilter()){
                 filter.add(Restrictions.in("uid", obj.getUsersId()));
-                if(obj.isGrouping()){
-                    if(obj.getGroup_by().indexOf("user")!=-1){
-                        filter.setProjection(Projections.groupProperty("uid"));
-                    }
-                }
             }
             if(obj.isDateFilter()){
                 HashMap<String,String> params= obj.getDateParameters();
@@ -140,12 +126,26 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                     Date date = new SimpleDateFormat("yyyy/MM/dd").parse(params.get("date"));
                     filter.add(Restrictions.eq("create_at",date));
                 }
-                if(obj.isGrouping()){
-                    if(obj.getGroup_by().indexOf("date")!=-1){
-                        filter.setProjection(Projections.groupProperty("create_at"));
-                    }
-                }
             }
+            if(obj.isGrouping()){
+                ProjectionList projections = Projections.projectionList().add(Projections.rowCount());
+                for (int i=0;i<obj.getGroup_by().size();i++){
+                    if(obj.getGroup_by().get(i).equals("date"))
+                        projections.add(Projections.min("create_at"),"create_at").add(Projections.groupProperty("create_at"));
+                    else if (obj.getGroup_by().get(i).equals("exceptionClass"))
+                        projections.add(Projections.min("exc.id"),"exc.id").add(Projections.min("exc.exception_class")).add(Projections.groupProperty("exc.id"));
+                    else if (obj.getGroup_by().get(i).equals("message"))
+                        projections.add(Projections.min("message"),"message").add(Projections.groupProperty("message"));
+                    else if (obj.getGroup_by().get(i).equals("application"))
+                        projections.add(Projections.min("app.id"), "app.id").add(Projections.groupProperty("app.id"));
+                }
+                filter.setProjection(projections);
+            }else
+            if(sorting_type.equals("asc")){
+                filter.addOrder(Order.asc(sorting_field));
+            }else
+                filter.addOrder(Order.desc(sorting_field));
+
             obtained_exceptions =filter
                     .setMaxResults(10)
                     .setFirstResult(offset)
@@ -206,33 +206,17 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            Criteria filter =session.createCriteria(getInnerClass());
+            Criteria filter =session.createCriteria(getInnerClass())
+                    .createAlias("exceptionClass", "exc")
+                    .createAlias("application", "app");
             if(obj.isClassFilter()){
-                filter.createAlias("exceptionClass", "exc").add(Restrictions.in("exc.id", obj.getClassesId()));
-                if(obj.isGrouping()){
-                    if(obj.getGroup_by().indexOf("exceptionClass")!=-1){
-                        filter.setProjection(Projections.projectionList()
-                                .add(Projections.groupProperty("exc.id"), "class"));
-                    }
-                }
+                filter.add(Restrictions.in("exc.id", obj.getClassesId()));
             }
             if(obj.isApplicationFilter()){
-                filter.createAlias("application","app");
                 filter.add(Restrictions.in("app.id", obj.getApplicationsId()));
-                if(obj.isGrouping()){
-                    if(obj.getGroup_by().indexOf("application")!=-1){
-                        filter.setProjection(Projections.groupProperty("app.id"));
-                        filter.setProjection(Projections.groupProperty("app.id"));
-                    }
-                }
             }
             if(obj.isUserFilter()){
                 filter.add(Restrictions.in("uid", obj.getUsersId()));
-                if(obj.isGrouping()){
-                    if(obj.getGroup_by().indexOf("user")!=-1){
-                        filter.setProjection(Projections.groupProperty("uid"));
-                    }
-                }
             }
             if(obj.isDateFilter()){
                 HashMap<String,String> params= obj.getDateParameters();
@@ -250,11 +234,26 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                     Date date = new SimpleDateFormat("yyyy/MM/dd").parse(params.get("date"));
                     filter.add(Restrictions.eq("create_at",date));
                 }
-                if(obj.isGrouping()){
-                    if(obj.getGroup_by().indexOf("date")!=-1){
-                        filter.setProjection(Projections.groupProperty("create_at"));
-                    }
+            }
+            if(obj.isGrouping()){
+                ProjectionList projections = Projections.projectionList().add(Projections.min("id"))
+                        .add(Projections.min("message"),"message")
+                        .add(Projections.min("create_at"),"create_at")
+                        .add(Projections.min("exc.id"),"exc.id")
+                        .add(Projections.min("exc.exception_class"))
+                        .add(Projections.min("app.id"),"app.id")
+                        .add(Projections.min("app.name"));
+                for (int i=0;i<obj.getGroup_by().size();i++){
+                    if(obj.getGroup_by().get(i).equals("date"))
+                        projections.add(Projections.groupProperty("create_at"));
+                    else if (obj.getGroup_by().get(i).equals("exceptionClass"))
+                        projections.add(Projections.groupProperty("exc.id"));
+                    else if (obj.getGroup_by().get(i).equals("message"))
+                        projections.add(Projections.groupProperty("message"));
+                    else if (obj.getGroup_by().get(i).equals("application"))
+                        projections.add(Projections.groupProperty("app.id"));
                 }
+                filter.setProjection(projections);
             }
             total =filter
                     .list().size();

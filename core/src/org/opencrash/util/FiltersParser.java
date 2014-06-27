@@ -8,6 +8,7 @@ import org.opencrash.domain_objects.ObtainedException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -88,11 +89,25 @@ public class FiltersParser {
         return  this.filterObject;
     }
 
-    public String getResult(List<ObtainedException> list,Integer total){
+    public String getResult(List<ObtainedException> list,Integer total,boolean grouping){
         JSONArray jsonArray = new JSONArray();
         JSONObject total_page= new JSONObject();
         total_page.put("total",total);
         jsonArray.add(total);
+        if(grouping){
+            Iterator iterator = list.iterator();
+            while (iterator.hasNext()) {
+                Object[] row = (Object[])iterator.next();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id",row[0].toString());
+                jsonObject.put("exceptionClass",row[4].toString());
+                jsonObject.put("application",row[6].toString());
+                jsonObject.put("application_id",row[5].toString());
+                jsonObject.put("date",row[2].toString());
+                jsonObject.put("message",row[1].toString());
+                jsonArray.add(jsonObject);
+            }
+        }else
         for(int i=0;i<list.size();i++){
             ObtainedException obj = list.get(i);
             JSONObject jsonObject = new JSONObject();
@@ -107,5 +122,17 @@ public class FiltersParser {
         }
         json = jsonArray.toJSONString();
         return json;
+    }
+    public String getSortField(String filed){
+        String column=null;
+        if(filed.equals("date"))
+            column = "create_at";
+        if(filed.equals("class"))
+            column = "exc.id";
+        if(filed.equals("message"))
+            column = "message";
+        if(filed.equals("application"))
+            column = "app.id";
+        return column;
     }
 }

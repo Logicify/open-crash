@@ -24,22 +24,25 @@ public class Ajax {
     @RequestMapping(value ="/filter" , method = RequestMethod.POST)
     public @ResponseBody
                 String save(HttpServletRequest request) {
-        //@RequestBody String jsonString
         String jsonString = request.getParameter("json");
         Integer page = Integer.parseInt(request.getParameter("page"));
+        String sorting_type = request.getParameter("sorting_type");
+        String sorting_field = request.getParameter("sorting_field");
         FiltersParser filtersParser = new FiltersParser(jsonString);
         List<ObtainedException> list =null;
         Integer total_elements = null;
+        boolean grouping = false;
         try {
             filtersParser.Parse();
             FilterObject filterObject = filtersParser.getFilters();
             Integer offset = (page-1) * 10;
-            list = ajaxService.loadByFilters(filterObject,offset);
+            list = ajaxService.loadByFilters(filterObject,offset,filtersParser.getSortField(sorting_field),sorting_type);
             total_elements = ajaxService.getTotalElements(filterObject);
+            grouping = filterObject.isGrouping();
         }catch (ApiExceptions e){
         }
         double total_pages = Math.ceil(total_elements/10);
-        return filtersParser.getResult(list,(int) total_pages+1);
+        return filtersParser.getResult(list,(int) total_pages+1,grouping);
     }
 
 }

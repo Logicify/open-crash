@@ -93,21 +93,32 @@
         <button type="button" id="form_submit">submit</button>
     </form>
 </div>
-<div class="span7">
+<div class="span7 filter_t hidden">
     <table id="filter_table" class="display" cellspacing="0" width="100%">
         <thead>
         <tr>
-            <th class="sorting">Date</th>
-            <th class="sorting">Exception Class</th>
-            <th class="sorting">Application</th>
-            <th class="sorting">Message</th>
+            <th class="sorting_desc" sort="date">Date</th>
+            <th class="sorting" sort="class">Exception Class</th>
+            <th class="sorting" sort="application">Application</th>
+            <th class="sorting" sort="message">Message</th>
         </tr>
         </thead>
     </table>
-    <div class="pagination text-center">
+        <div class="pagination text-center">
         <ul id="pagination" class="pagination-sm pagination"></ul>
     </div>
 </div>
+    <div class="span7 filter_t_group hidden">
+        <table id="filter_table_group" class="display" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>Group by</th>
+                <th class="sorting" sort="param">Param</th>
+                <th class="sorting" sort="count">count</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
