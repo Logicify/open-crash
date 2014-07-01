@@ -56,7 +56,7 @@
                             <option value="from">from</option>
                             <option value="to">to</option>
                             <option value="from_to">from-to</option>
-                            <option value="="></option>
+                            <option value="eq"></option>
                         </select>
                         <input name="date" id="datepicker_date" class="filter">
                         <input class="hidden filter" id="to_date" name="to">
@@ -68,7 +68,7 @@
                 <td>User</td>
                 <td><input class="filter_cbx" type="checkbox" name="filter[]" value="user" class="multiselect" multiple="multiple"></td>
                 <td>
-                    <select id="user" name="user" class="multiselect" multiple="multiple">
+                    <select id="user" name="user" class="multiselect_users" multiple="multiple">
                         <option value="1" >User 1</option>
                         <option value="2">User 2</option>
                     </select>
@@ -113,16 +113,26 @@
             <thead>
             <tr>
                 <th>Group by</th>
-                <th class="sorting" sort="param">Param</th>
-                <th class="sorting" sort="count">count</th>
+                <th class="sorting" sort="class">Exception Class</th>
+                <th class="sorting" sort="count">Count</th>
             </tr>
             </thead>
         </table>
     </div>
 </div>
 <script type="text/javascript">
+
     $(document).ready(function() {
         $('.multiselect').multiselect({
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            maxHeight: 200,
+            buttonWidth:150,
+            checkboxName:"class"
+        });
+    });
+    $(document).ready(function() {
+        $('.multiselect_users').multiselect({
             includeSelectAllOption: true,
             enableFiltering: true,
             maxHeight: 200,

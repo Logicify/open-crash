@@ -2,6 +2,8 @@ var table_check  =false;
 var sorting_field;
 var sorting_type;
 var page=1;
+var t;
+var t1;
 $(".app_menu").click(function(){
     var href = $(this).attr("href");
     if ( $(this).hasClass("menu_active") ) {
@@ -17,11 +19,11 @@ $(".app_menu").click(function(){
 });
 $("#form_submit").click(function() {
     if(table_check == false){
-        var t =tableInitiation(true);
-        var t1=tableWithGroupInitiation(true);
+        t=tableInitiation(true);
+        t1=tableWithGroupInitiation(true);
         table_check = true;
     }else
-        var t =tableInitiation(false);
+        t =tableInitiation(false);
     getData(0,t,true,"date","desc");
 });
 function getData(page,t,check,sorting_field,sorting_type){
@@ -83,36 +85,40 @@ function getData(page,t,check,sorting_field,sorting_type){
     }
     returnData.filters = filters;
     returnData.group = group_by;
+    var  post_data = "json="+JSON.stringify(returnData)+"&page="+page+"&sorting_field="+sorting_field+"&sorting_type="+sorting_type;
     if(grouped){
         var table = $('.filter_t');
         if($(".filter_t_group").hasClass("hidden"))
             $(".filter_t_group").removeClass("hidden")
         if(!table.hasClass("hidden"))
             table.addClass("hidden");
+        $.ajax({
+            url:"/filter",
+            type:"POST",
+            data: post_data,
+            cache:false,
+            success:function( data ) {
+                var objects = JSON.parse(data);
+                buildGroupedTable(objects,t1,check);
+            }
+        })
     }else{
         var table = $('.filter_t');
         if(table.hasClass("hidden"))
             table.removeClass("hidden");
         if(!$(".filter_t_group").hasClass("hidden"))
             $(".filter_t_group").addClass("hidden")
-
-    }
-    var  post_data = "json="+JSON.stringify(returnData)+"&page="+page+"&sorting_field="+sorting_field+"&sorting_type="+sorting_type;
-    $.ajax({
-        url:"/filter",
-        type:"POST",
-        data: post_data,
-        cache:false,
-        success:function( data ) {
-            var objects = JSON.parse(data);
-            if(!grouped){
-                    buildTable(objects,t,check);
-            }else{
-                alert("Done!");
+        $.ajax({
+            url:"/filter",
+            type:"POST",
+            data: post_data,
+            cache:false,
+            success:function( data ) {
+                var objects = JSON.parse(data);
+                buildTable(objects,t,check);
             }
-
-        }
-    })
+        })
+    }
 
 }
 function buildTable(objects,t,check){
@@ -129,6 +135,22 @@ function buildTable(objects,t,check){
     }
     if(check == true)
         paginationInit(objects[0]);
+}
+function buildGroupedTable(objects,check){
+    t1
+        .clear()
+        .draw();
+    for(var i=1;i<objects.length;i++){
+        var filter_obj ={};
+        filter_obj.date = objects[i].date;
+        filter_obj.id = objects[i].id;
+        filter_obj.appId = objects[i].appId;
+        t1.row.add([
+            null,//objects[i].id,
+            "<a id='exceptionId"+i+"' onclick='setFilter("+i+")'date='"+filter_obj.date+"' appId='"+filter_obj.appId+"' classId="+objects[i].id+">"+objects[i].exceptionClass+"</a>",
+            objects[i].count
+        ]).draw();
+    }
 }
 function tableInitiation(check){
     if(check==true){
@@ -194,3 +216,47 @@ $("th[class^='sorting']").click(function(){
     var t =tableInitiation(false);
     getData(page,t,false,sorting_field,sorting_type);
 });
+
+function setFilter(obj_id){
+    var group_cbx = $("input[name='group[]']");
+    var j=0;
+    var grouped=[];
+    console.log(obj_id);
+    var object =$("a[id='exceptionId"+obj_id+"']");
+    var appId = object.attr("appId");
+    var date =object.attr("date");
+    var id =object.attr("classId");
+    console.log(date,appId);
+    for(var i=0;i<group_cbx.length;i++){
+        if (group_cbx[i].checked) {
+            grouped[j]=group_cbx[i].getAttribute("value");
+        }
+        j++;
+    }
+    filerReset();
+    console.log(grouped);
+    for(var i=0;i<grouped.length;i++){
+        var val =grouped[i] ;
+        if(val == "exceptionClass"){
+            $(".filter_cbx[name='filter[]'][value='exceptionClass']").trigger('click');
+            $("input[name='class'][value="+id+"]").trigger('click');
+        }
+        if(val=="date"){
+            $(".filter_cbx[name='filter[]'][value='date']").trigger('click');
+            $("input[name='date']").attr("value",date.replace('-','/').replace('-','/'));
+            $("#operation").find("option[value='eq']").attr("selected",true)
+        }
+        if(val=="application"){
+            $(".filter_cbx[name='filter[]'][value='application']").trigger('click');
+            $("input[name='application'][value="+appId+"]").trigger('click');
+        }
+    }
+
+    $("#form_submit").trigger("click");
+}
+function filerReset(){
+    $("input:checkbox").attr('checked', false);
+    $("li[class='active']").removeClass("active");
+    $("input[class='filter']").attr("value","");
+    $("#exceptionClass").find("option").attr("selected", false);
+}

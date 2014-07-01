@@ -99,12 +99,12 @@ public class FiltersParser {
             while (iterator.hasNext()) {
                 Object[] row = (Object[])iterator.next();
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id",row[0].toString());
-                jsonObject.put("exceptionClass",row[4].toString());
-                jsonObject.put("application",row[6].toString());
-                jsonObject.put("application_id",row[5].toString());
-                jsonObject.put("date",row[2].toString());
-                jsonObject.put("message",row[1].toString());
+                jsonObject.put("id",row[2].toString());
+                jsonObject.put("exceptionClass",row[3].toString());
+                jsonObject.put("count",row[0].toString());
+                jsonObject.put("date",row[1].toString());
+                jsonObject.put("appId",row[4].toString());
+                jsonObject.put("appName",row[5].toString());
                 jsonArray.add(jsonObject);
             }
         }else

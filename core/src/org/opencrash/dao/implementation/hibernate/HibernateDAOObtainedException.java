@@ -122,13 +122,18 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                 }else if(params.get("operation").equals("to")){
                     Date date = new SimpleDateFormat("yyyy/MM/dd").parse(params.get("date"));
                     filter.add(Restrictions.le("create_at", date));
-                }else if(params.get("operation").isEmpty()){
+                }else if(params.get("operation").equals("eq")){
                     Date date = new SimpleDateFormat("yyyy/MM/dd").parse(params.get("date"));
                     filter.add(Restrictions.eq("create_at",date));
                 }
             }
             if(obj.isGrouping()){
-                ProjectionList projections = Projections.projectionList().add(Projections.rowCount());
+                ProjectionList projections = Projections.projectionList().add(Projections.rowCount())
+                        .add(Projections.min("create_at"))
+                        .add(Projections.min("exc.id"))
+                        .add(Projections.min("exc.exception_class"))
+                        .add(Projections.min("app.id"))
+                        .add(Projections.min("app.name"));
                 for (int i=0;i<obj.getGroup_by().size();i++){
                     if(obj.getGroup_by().get(i).equals("date"))
                         projections.add(Projections.min("create_at"),"create_at").add(Projections.groupProperty("create_at"));
@@ -137,7 +142,7 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                     else if (obj.getGroup_by().get(i).equals("message"))
                         projections.add(Projections.min("message"),"message").add(Projections.groupProperty("message"));
                     else if (obj.getGroup_by().get(i).equals("application"))
-                        projections.add(Projections.min("app.id"), "app.id").add(Projections.groupProperty("app.id"));
+                        projections.add(Projections.min("app.id"), "app.id").add(Projections.min("app.name")).add(Projections.groupProperty("app.id"));
                 }
                 filter.setProjection(projections);
             }else
