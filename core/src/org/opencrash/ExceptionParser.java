@@ -10,6 +10,8 @@ import org.opencrash.util.ExceptionBodyParser;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Fong on 07.05.14.
@@ -47,7 +49,9 @@ public class ExceptionParser {
                 parserObject.setMessage(exceptionBodyParser.getMessage());
                 parserObject.setExceptionClass(exceptionBodyParser.getExceptionClass());
             }
+
             parserObject.setUid(getUid(application_environment));
+            parserObject.setDevice(getPhoneModel(application_environment.get("phone").toString()));
             if(application_environment.containsKey("wifi_on")){
                 parserObject.setWifiStatus(getWifiStatus(application_environment));
             }
@@ -118,4 +122,14 @@ public class ExceptionParser {
         return object;
     }
 
+    private String getPhoneModel(String data){
+        String model = null;
+        Pattern datePatt = Pattern.compile("(.+)\\|(.+)");
+        Matcher m = datePatt.matcher(data);
+        if (m.find()) {
+            model=m.group(2);
+        }else
+            logger.log(Level.SEVERE,"Cant get Phone Model");
+        return model;
+    }
 }

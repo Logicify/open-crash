@@ -22,7 +22,7 @@ public class ExceptionBodyParser {
         if (m.find()) {
             exceptionClass=m.group(1);
         }else
-            throw new ApiExceptions("Cannot get `backtrace` from this data",8);
+            throw new ApiExceptions("Can't get `backtrace` from this data",8);
         return exceptionClass;
     }
 
@@ -33,7 +33,7 @@ public class ExceptionBodyParser {
             message=m.group(2);
         }
         else
-            throw new ApiExceptions("Cannot get `backtrace` from this data",8);
+            throw new ApiExceptions("Can't get `backtrace` from this data",8);
         return message;
     }
 

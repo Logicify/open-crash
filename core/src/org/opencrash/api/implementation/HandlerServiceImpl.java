@@ -1,13 +1,11 @@
 package org.opencrash.api.implementation;
 
-import org.opencrash.api.ApplicationService;
+import org.opencrash.api.DeviceService;
 import org.opencrash.api.ExceptionClassService;
 import org.opencrash.api.HandlerService;
 import org.opencrash.api.ObtainedExceptionService;
-import org.opencrash.domain_objects.Application;
-import org.opencrash.domain_objects.ExceptionClass;
-import org.opencrash.domain_objects.ObtainedException;
-import org.opencrash.domain_objects.ParserObject;
+import org.opencrash.domain_objects.*;
+import org.opencrash.util.DeviceValidator;
 import org.opencrash.util.ExceptionClassValidator;
 import org.opencrash.util.ObtainedExceptionValidator;
 import org.opencrash.util.exceptions.HandlerServiceException;
@@ -25,7 +23,7 @@ import java.util.logging.Logger;
 public class HandlerServiceImpl implements HandlerService {
     Logger logger = Logger.getLogger(HandlerService.class.getName());
     @Autowired
-    private ApplicationService applicationService;
+    private DeviceService deviceService;
     @Autowired
     private ExceptionClassService exceptionClassService;
     @Autowired
@@ -53,10 +51,20 @@ public class HandlerServiceImpl implements HandlerService {
                 }
 
             }
+            Device device = deviceService.getByModel(obj.getDevice());
+            if(device == null){
+                DeviceValidator deviceValidator = new DeviceValidator(obj.getDevice());
+                deviceValidator.validate();
+                if(deviceValidator.isValid()){
+                    device = deviceValidator.buildObject();
+                    deviceService.addNew(device);
+                }
+            }
             ObtainedExceptionValidator validator = new ObtainedExceptionValidator(exceptionClass,application,obj);
             validator.validate();
             if(validator.valid()){
                 ObtainedException exception = validator.buildObject();
+                exception.setDevice(device);
                 obtainedExceptionService.newObtainedException(exception);
             }else{
                 Map<String,String> errors = validator.getErrors();

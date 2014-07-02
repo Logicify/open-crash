@@ -2,6 +2,7 @@
 <%@ page import="org.opencrash.domain_objects.ObtainedException" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.opencrash.domain_objects.Device" %>
 <%@include file="../includes/header.jsp"%>
 <style>
     .filter_cbx {
@@ -65,28 +66,30 @@
                 <td><input class="filter_cbx" type="checkbox" name="group[]" value="date"></td>
             </tr>
             <tr>
-                <td>User</td>
-                <td><input class="filter_cbx" type="checkbox" name="filter[]" value="user" class="multiselect" multiple="multiple"></td>
+                <td>Device</td>
+                <td><input class="filter_cbx" type="checkbox" name="filter[]" value="device" class="multiselect" multiple="multiple"></td>
                 <td>
-                    <select id="user" name="user" class="multiselect_users" multiple="multiple">
-                        <option value="1" >User 1</option>
-                        <option value="2">User 2</option>
+                    <select id="device" name="device" class="multiselect_device" multiple="multiple">
+                       <% List<Device> devices = (List<Device>) request.getAttribute("devices");
+                       for(int i=0;i<devices.size();i++){%>
+                        <option value="<%=devices.get(i).getId()%>"><%=devices.get(i).getName()%></option>
+                        <%}%>
                     </select>
                 </td>
-                <td><input class="filter_cbx" type="checkbox" name="group[]" value="user"></td>
+                <td><input class="filter_cbx" type="checkbox" name="group[]" value="device"></td>
             </tr>
             <tr>
                 <td>Application</td>
                 <td><input  class="filter_cbx" type="checkbox" name="filter[]" value="application"></td>
                 <td>
-                    <select  id="application" name="application" class="multiselect" multiple="multiple">
+                    <select  id="application" name="application" class="multiselect_application" multiple="multiple">
                         <% List<Application> applications = (List<Application>)request.getAttribute("applications_for_filter");
                         for(int i =0;i<applications.size();i++){%>
                           <option value="<%=applications.get(i).getId()%>"><%=applications.get(i).getName()%></option>
                         <%}%>
                     </select>
                 </td>
-                <td><input class="filter_cbx" type="checkbox" name="group[]" value="application"></td>
+                <td><input class="filter_cbx" type="checkbox" name="group[]" value="applicatio1n"></td>
             </tr>
             </tbody>
         </table>
@@ -114,7 +117,7 @@
             <tr>
                 <th>Group by</th>
                 <th class="sorting" sort="class">Exception Class</th>
-                <th class="sorting" sort="count">Count</th>
+                <th class="sorting_desc" sort="count">Count</th>
             </tr>
             </thead>
         </table>
@@ -132,11 +135,21 @@
         });
     });
     $(document).ready(function() {
-        $('.multiselect_users').multiselect({
+        $('.multiselect_device').multiselect({
             includeSelectAllOption: true,
             enableFiltering: true,
             maxHeight: 200,
-            buttonWidth:150
+            buttonWidth:150,
+            checkboxName:"device"
+        });
+    });
+    $(document).ready(function() {
+        $('.multiselect_application').multiselect({
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            maxHeight: 200,
+            buttonWidth:150,
+            checkboxName:"application"
         });
     });
     $( "#operation" ).change(function() {

@@ -100,15 +100,16 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
             session = HibernateUtil.getSessionFactory().openSession();
             Criteria filter =session.createCriteria(getInnerClass())
                                     .createAlias("exceptionClass", "exc")
-                                    .createAlias("application", "app");
+                                    .createAlias("application", "app")
+                                    .createAlias("device", "dev");
             if(obj.isClassFilter()){
                 filter.add(Restrictions.in("exc.id", obj.getClassesId()));
             }
             if(obj.isApplicationFilter()){
                 filter.add(Restrictions.in("app.id", obj.getApplicationsId()));
             }
-            if(obj.isUserFilter()){
-                filter.add(Restrictions.in("uid", obj.getUsersId()));
+            if(obj.isDeviceFilter()){
+                filter.add(Restrictions.in("dev.id",obj.getDevicesId()));
             }
             if(obj.isDateFilter()){
                 HashMap<String,String> params= obj.getDateParameters();
@@ -124,28 +125,27 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                     filter.add(Restrictions.le("create_at", date));
                 }else if(params.get("operation").equals("eq")){
                     Date date = new SimpleDateFormat("yyyy/MM/dd").parse(params.get("date"));
-                    filter.add(Restrictions.eq("create_at",date));
+                    filter.add(Restrictions.eq("create_at", date));
                 }
             }
             if(obj.isGrouping()){
-                ProjectionList projections = Projections.projectionList().add(Projections.rowCount())
+                ProjectionList projections = Projections.projectionList().add(Projections.rowCount(),"count")
                         .add(Projections.min("create_at"))
                         .add(Projections.min("exc.id"))
-                        .add(Projections.min("exc.exception_class"))
-                        .add(Projections.min("app.id"))
-                        .add(Projections.min("app.name"));
+                        .add(Projections.min("exc.exception_class"),"class")
+                        .add(Projections.min("app.id"));
                 for (int i=0;i<obj.getGroup_by().size();i++){
                     if(obj.getGroup_by().get(i).equals("date"))
-                        projections.add(Projections.min("create_at"),"create_at").add(Projections.groupProperty("create_at"));
+                        projections.add(Projections.groupProperty("create_at"));
                     else if (obj.getGroup_by().get(i).equals("exceptionClass"))
-                        projections.add(Projections.min("exc.id"),"exc.id").add(Projections.min("exc.exception_class")).add(Projections.groupProperty("exc.id"));
+                        projections.add(Projections.groupProperty("exc.id"));
                     else if (obj.getGroup_by().get(i).equals("message"))
-                        projections.add(Projections.min("message"),"message").add(Projections.groupProperty("message"));
+                        projections.add(Projections.groupProperty("message"));
                     else if (obj.getGroup_by().get(i).equals("application"))
-                        projections.add(Projections.min("app.id"), "app.id").add(Projections.min("app.name")).add(Projections.groupProperty("app.id"));
+                        projections.add(Projections.groupProperty("app.id"));
                 }
                 filter.setProjection(projections);
-            }else
+            }
             if(sorting_type.equals("asc")){
                 filter.addOrder(Order.asc(sorting_field));
             }else
@@ -220,8 +220,8 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
             if(obj.isApplicationFilter()){
                 filter.add(Restrictions.in("app.id", obj.getApplicationsId()));
             }
-            if(obj.isUserFilter()){
-                filter.add(Restrictions.in("uid", obj.getUsersId()));
+            if(obj.isDeviceFilter()){
+                filter.add(Restrictions.in("uid", obj.getDevicesId()));
             }
             if(obj.isDateFilter()){
                 HashMap<String,String> params= obj.getDateParameters();

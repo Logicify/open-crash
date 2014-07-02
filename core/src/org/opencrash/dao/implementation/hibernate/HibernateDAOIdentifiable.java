@@ -3,6 +3,7 @@ package org.opencrash.dao.implementation.hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.opencrash.dao.interfaces.DAOIdentifiable;
+import org.opencrash.domain_objects.Device;
 import org.opencrash.domain_objects.IdentifiableEntity;
 import org.opencrash.util.HibernateUtil;
 
@@ -80,4 +81,5 @@ abstract class HibernateDAOIdentifiable<T extends IdentifiableEntity> extends Hi
             }
         }
     }
+
 }

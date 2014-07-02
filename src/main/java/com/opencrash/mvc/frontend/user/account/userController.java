@@ -1,9 +1,6 @@
 package com.opencrash.mvc.frontend.user.account;
 
-import org.opencrash.api.ApplicationService;
-import org.opencrash.api.ObtainedExceptionService;
-import org.opencrash.api.SystemService;
-import org.opencrash.api.UserService;
+import org.opencrash.api.*;
 import org.opencrash.api.implementation.ObtainedExceptionServiceImpl;
 import org.opencrash.api.implementation.UserServiceImpl;
 import org.opencrash.domain_objects.*;
@@ -33,6 +30,8 @@ public class userController {
     private  ObtainedExceptionService obtainedExceptionService;
     @Autowired
     private SystemService systemService;
+    @Autowired
+    DeviceService deviceService;
 
     @RequestMapping(value="/myaccount",method = RequestMethod.GET)
     public String getMyAccount(ModelMap model,HttpServletRequest request){
@@ -227,8 +226,10 @@ public class userController {
             return "redirect:/login";
         List<Application> applications = applicationService.loadApplicationByUser(authUser.getUser_id());
         List<ObtainedException> exceptionClasses =obtainedExceptionService.loadAllExceptionClasses();
+        List<Device> devices = deviceService.loadAll();
         model.put("applications_for_filter",applications);
         model.put("exceptionClasses",exceptionClasses);
+        model.put("devices",devices);
         return "user/filters";
     }
 }

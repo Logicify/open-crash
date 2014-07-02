@@ -1,9 +1,11 @@
 var table_check  =false;
 var sorting_field;
-var sorting_type;
+var sorting_type = "desc";
 var page=1;
 var t;
 var t1;
+var pagination;
+
 $(".app_menu").click(function(){
     var href = $(this).attr("href");
     if ( $(this).hasClass("menu_active") ) {
@@ -56,13 +58,13 @@ function getData(page,t,check,sorting_field,sorting_type){
                     filter_obj.operation = $("#operation").find(":selected").val();
                     filter_obj.date = $("input[name='date']").val();
                 }
-            }else if (cbx_value =="user"){
+            }else if (cbx_value =="device"){
                 filter_obj.filter =cbx_value;
                 var selectedValues = [];
-                $("#user :selected").each(function(){
+                $("#device :selected").each(function(){
                     selectedValues.push($(this).val());
                 });
-                filter_obj.user =selectedValues;
+                filter_obj.device =selectedValues;
             }else if (cbx_value =="application"){
                 filter_obj.filter =cbx_value;
                 var selectedValues = [];
@@ -85,6 +87,12 @@ function getData(page,t,check,sorting_field,sorting_type){
     }
     returnData.filters = filters;
     returnData.group = group_by;
+    if(grouped&&check==true){
+        sorting_field="count";
+    }
+    else if (grouped == false && check == true)
+        sorting_field = "date";
+
     var  post_data = "json="+JSON.stringify(returnData)+"&page="+page+"&sorting_field="+sorting_field+"&sorting_type="+sorting_type;
     if(grouped){
         var table = $('.filter_t');
@@ -133,8 +141,10 @@ function buildTable(objects,t,check){
             objects[i].message
         ] ).draw();
     }
-    if(check == true)
-        paginationInit(objects[0]);
+    if(check==true)
+        paginationInit(objects[0],true);
+    else
+        paginationInit(objects[0],false);
 }
 function buildGroupedTable(objects,check){
     t1
@@ -144,13 +154,16 @@ function buildGroupedTable(objects,check){
         var filter_obj ={};
         filter_obj.date = objects[i].date;
         filter_obj.id = objects[i].id;
+        filter_obj.deviceId = objects[i].deviceId;
         filter_obj.appId = objects[i].appId;
         t1.row.add([
-            null,//objects[i].id,
-            "<a id='exceptionId"+i+"' onclick='setFilter("+i+")'date='"+filter_obj.date+"' appId='"+filter_obj.appId+"' classId="+objects[i].id+">"+objects[i].exceptionClass+"</a>",
+            "<span class='group'></span>",
+            "<a id='exceptionId"+i+"' onclick='setFilter("+i+")'date='"+filter_obj.date+"' deviceId ='"+filter_obj.deviceId+"'appId='"+filter_obj.appId+"' classId="+objects[i].id+">"+objects[i].exceptionClass+"</a>",
             objects[i].count
         ]).draw();
+
     }
+    groupToTable();
 }
 function tableInitiation(check){
     if(check==true){
@@ -185,7 +198,8 @@ function getPage(p){
     var t =tableInitiation(false);
     getData(page,t,false,sorting_field,sorting_type);
 }
-function paginationInit(total_pages){
+function paginationInit(total_pages,check){
+    $('#pagination').resetPaging();
     $('#pagination').twbsPagination({
         totalPages: total_pages,
         visiblePages: 3,
@@ -194,10 +208,12 @@ function paginationInit(total_pages){
             $('#page-content').text('Page ' + page);
         }
     });
+
 }
 $("th[class^='sorting']").click(function(){
     var obj = $(this);
-    sorting_field=$(this).attr("sort");
+    sorting_field=obj.attr("sort");
+    console.log(sorting_field);
     var class_name = $(this).attr("class");
     $("th[class^='sorting']").each(function(){
         $(this).removeClass("sorting_desc");
@@ -214,19 +230,19 @@ $("th[class^='sorting']").click(function(){
         sorting_type="desc";
     }
     var t =tableInitiation(false);
-    getData(page,t,false,sorting_field,sorting_type);
+    getData(page,t,false,obj.attr("sort"),sorting_type);
 });
 
 function setFilter(obj_id){
     var group_cbx = $("input[name='group[]']");
     var j=0;
     var grouped=[];
-    console.log(obj_id);
     var object =$("a[id='exceptionId"+obj_id+"']");
     var appId = object.attr("appId");
     var date =object.attr("date");
     var id =object.attr("classId");
-    console.log(date,appId);
+    var deviceId =object.attr("deviceId");
+      console.log(obj_id,appId);
     for(var i=0;i<group_cbx.length;i++){
         if (group_cbx[i].checked) {
             grouped[j]=group_cbx[i].getAttribute("value");
@@ -234,7 +250,7 @@ function setFilter(obj_id){
         j++;
     }
     filerReset();
-    console.log(grouped);
+
     for(var i=0;i<grouped.length;i++){
         var val =grouped[i] ;
         if(val == "exceptionClass"){
@@ -250,13 +266,35 @@ function setFilter(obj_id){
             $(".filter_cbx[name='filter[]'][value='application']").trigger('click');
             $("input[name='application'][value="+appId+"]").trigger('click');
         }
+        if(val=="device"){
+            $(".filter_cbx[name='filter[]'][value='device']").trigger('click');
+            $("input[name='device'][value="+deviceId+"]").trigger('click');
+        }
     }
 
     $("#form_submit").trigger("click");
+
 }
 function filerReset(){
     $("input:checkbox").attr('checked', false);
     $("li[class='active']").removeClass("active");
     $("input[class='filter']").attr("value","");
     $("#exceptionClass").find("option").attr("selected", false);
+}
+function groupToTable(){
+    var objects = $("span[class='group']").parent().attr("rowspan",4);
+    for(var i=1;i<objects.length;i++){
+        objects[i].remove();
+    }
+    var group_cbx = $("input[name='group[]']");
+    var group_by;
+    for(var i=0;i<group_cbx.length;i++){
+        if (group_cbx[i].checked) {
+            if(i==0)
+                group_by =group_cbx[i].getAttribute("value");
+            else
+                group_by = group_by+','+group_cbx[i].getAttribute("value");
+        }
+    }
+    $("span[class='group']").text(group_by);
 }

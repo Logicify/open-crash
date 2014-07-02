@@ -11,8 +11,8 @@ public class FilterObject {
     private List<Integer> classesId;
     private boolean dateFilter;
     private HashMap<String,String> dateParameters;
-    private boolean userFilter;
-    private List<Integer> usersId;
+    private boolean deviceFilter;
+    private List<Integer> devicesId;
     private boolean applicationFilter;
     private List<Integer> applicationsId;
     private boolean grouping;
@@ -50,20 +50,20 @@ public class FilterObject {
         this.dateParameters = dateParameters;
     }
 
-    public boolean isUserFilter() {
-        return userFilter;
+    public boolean isDeviceFilter() {
+        return deviceFilter;
     }
 
-    public void setUserFilter(boolean userFilter) {
-        this.userFilter = userFilter;
+    public void setDeviceFilter(boolean deviceFilter) {
+        this.deviceFilter = deviceFilter;
     }
 
-    public List<Integer> getUsersId() {
-        return usersId;
+    public List<Integer> getDevicesId() {
+        return devicesId;
     }
 
-    public void setUsersId(List<Integer> usersId) {
-        this.usersId = usersId;
+    public void setDevicesId(List<Integer> devicesId) {
+        this.devicesId = devicesId;
     }
 
     public boolean isApplicationFilter() {

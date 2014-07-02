@@ -55,13 +55,13 @@ public class FiltersParser {
                     }
                    filterObj.setDateParameters(params);
                }else if(filter_type.equals("user")){
-                    filterObj.setUserFilter(true);
-                   JSONArray users =(JSONArray) f.get("user");
+                    filterObj.setDeviceFilter(true);
+                   JSONArray devices =(JSONArray) f.get("device");
                    List<Integer> list = new ArrayList<Integer>();
-                   for (int j=0; j<users.size(); j++) {
-                       list.add( Integer.parseInt(users.get(j).toString()));
+                   for (int j=0; j<devices.size(); j++) {
+                       list.add( Integer.parseInt(devices.get(j).toString()));
                    }
-                    filterObj.setUsersId(list);
+                    filterObj.setDevicesId(list);
                }else if(filter_type.equals("application")){
                    filterObj.setApplicationFilter(true);
                    JSONArray applications =(JSONArray) f.get("application");
@@ -133,6 +133,8 @@ public class FiltersParser {
             column = "message";
         if(filed.equals("application"))
             column = "app.id";
+        if(filed.equals("count"))
+            column = "count";
         return column;
     }
 }

@@ -19,6 +19,7 @@ public class ParserObject {
     private Integer screenWidth;
     private Integer screenHeight;
     private String osVersion;
+    private String device;
 
     public JSONObject getException() {
         return exception;
@@ -123,5 +124,14 @@ public class ParserObject {
     public void setOsVersion(String osVersion) {
         this.osVersion = osVersion;
     }
+
+    public String getDevice() {
+        return device;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
+    }
 }
+
 

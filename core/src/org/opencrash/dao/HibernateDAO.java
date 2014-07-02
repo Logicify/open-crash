@@ -9,6 +9,7 @@ public class HibernateDAO {
     private HibernateDAOUser DAO_User = null;
     private HibernateDAOSystem DAO_SYSTEM = null;
     private static HibernateDAO INSTANCE = null;
+    private HibernateDAODevice DAO_Device = null;
 
     public static HibernateDAO getInstance() {
         if (INSTANCE == null) {
@@ -48,5 +49,11 @@ public class HibernateDAO {
             DAO_SYSTEM = new HibernateDAOSystem();
         }
         return DAO_SYSTEM;
+    }
+    public HibernateDAODevice DAODevice(){
+        if(DAO_Device == null){
+            DAO_Device= new HibernateDAODevice();
+        }
+        return DAO_Device;
     }
 }
