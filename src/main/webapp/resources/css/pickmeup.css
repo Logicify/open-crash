@@ -12,6 +12,7 @@
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   display: none;
+  z-index: 9999;
   position: absolute; }
   .pickmeup * {
     -moz-box-sizing: border-box;

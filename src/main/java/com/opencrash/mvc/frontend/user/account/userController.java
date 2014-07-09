@@ -32,7 +32,8 @@ public class userController {
     private SystemService systemService;
     @Autowired
     DeviceService deviceService;
-
+    @Autowired
+    ExceptionClassService exceptionClassService;
     @RequestMapping(value="/myaccount",method = RequestMethod.GET)
     public String getMyAccount(ModelMap model,HttpServletRequest request){
         HttpSession session = request.getSession();
@@ -101,9 +102,43 @@ public class userController {
         if(application ==null)
             return "redirect:/myaccount";
         ObtainedExceptionService obtainedExceptionService = new ObtainedExceptionServiceImpl();
-        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionByApplication(applicationId);
+        String type = request.getParameter("sorting_type");
+        String field = request.getParameter("sorting_field");
+        Integer offset =0;
+        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionByApplication(applicationId,field,type,offset);
+        Integer count = obtainedExceptionService.countTopByApplicationId(applicationId);
         model.put("applicationId",applicationId);
         model.put("top_exceptions",obtained_exceptions);
+        double total_pages = Math.ceil(count/10);
+        model.put("count",(int) total_pages+1);
+        model.put("url","/myaccount/application/"+applicationId);
+        model.put("page",1);
+        return "user/application";
+    }
+    @RequestMapping(value = "/myaccount/application/{applicationId}/page-{page}",method = RequestMethod.GET)
+    public String getApplicationPage(@PathVariable("applicationId") Integer applicationId,@PathVariable("page") Integer page,ModelMap model,HttpServletRequest request){
+        HttpSession session = request.getSession();
+        AuthUser authUser = (AuthUser) session.getAttribute("userInfo");
+        if (authUser == null)
+            authUser = new AuthUser();
+        if (authUser.IsLogin().equals("false"))
+            return "redirect:/login";
+        Application application = applicationService.getById(applicationId);
+
+        if(application ==null)
+            return "redirect:/myaccount";
+        ObtainedExceptionService obtainedExceptionService = new ObtainedExceptionServiceImpl();
+        String type = request.getParameter("sorting_type");
+        String field = request.getParameter("sorting_field");
+        Integer offset = (page - 1) * 10;
+        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionByApplication(applicationId,field,type,offset);
+        Integer count = obtainedExceptionService.countTopByApplicationId(applicationId);
+        model.put("applicationId",applicationId);
+        model.put("top_exceptions",obtained_exceptions);
+        double total_pages = Math.ceil(count/10);
+        model.put("count",(int) total_pages+1);
+        model.put("url","/myaccount/application/"+applicationId);
+        model.put("page",page);
         return "user/application";
     }
 
@@ -117,9 +152,13 @@ public class userController {
             return "redirect:/login";
         ObtainedExceptionService obtainedExceptionService = new ObtainedExceptionServiceImpl();
         Integer page_count = obtainedExceptionService.getCount(applicationId,exception_id);
-        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionsByAppIdAndExId(applicationId,exception_id,0);
+        String type = request.getParameter("sorting_type");
+        String field = request.getParameter("sorting_field");
+        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionsByAppIdAndExId(applicationId,exception_id,0,type,field);
         model.put("exceptions",obtained_exceptions);
-        model.put("count",page_count);
+        double total_pages = Math.ceil(page_count/10);
+        model.put("count",(int) total_pages+1);
+        model.put("url","/myaccount/application/"+applicationId+"/exception/list/"+exception_id);
         model.put("page",1);
         return "user/exceptions-list";
     }
@@ -134,11 +173,14 @@ public class userController {
             return "redirect:/login";
         ObtainedExceptionService obtainedExceptionService = new ObtainedExceptionServiceImpl();
         int offset = (page - 1) * 10;
-        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionsByAppIdAndExId(applicationId,exception_id,offset);
+        String type = request.getParameter("sorting_type");
+        String field = request.getParameter("sorting_field");
+        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionsByAppIdAndExId(applicationId,exception_id,offset,type,field);
         Integer page_count = obtainedExceptionService.getCount(applicationId,exception_id);
         model.put("exceptions",obtained_exceptions);
-        model.put("exceptions",obtained_exceptions);
-        model.put("count",page_count);
+        double total_pages = Math.ceil(page_count/10);
+        model.put("count",(int) total_pages+1);
+        model.put("url","/myaccount/application/"+applicationId+"/exception/list/"+exception_id);
         model.put("page",page);
         return "user/exceptions-list";
     }
@@ -216,7 +258,7 @@ public class userController {
             return "redirect:/login";
     }
 
-    @RequestMapping(value = "/filter")
+    @RequestMapping(value = "/myaccount/filter")
     public String filter(HttpServletRequest request,ModelMap model){
         HttpSession session = request.getSession();
         AuthUser authUser = (AuthUser) session.getAttribute("userInfo");
@@ -230,6 +272,6 @@ public class userController {
         model.put("applications_for_filter",applications);
         model.put("exceptionClasses",exceptionClasses);
         model.put("devices",devices);
-        return "user/filters";
+        return "/user/filters";
     }
 }

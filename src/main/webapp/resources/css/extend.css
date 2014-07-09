@@ -17,29 +17,6 @@ h1,h2,h3,h4,h5,h6,p{color:#444444;}
 .box-inner{padding:15px;}
 .control-group:last-child{margin-bottom:0;}
 h3.bootstro{margin:0;}
-.dropdown-menu-login{
-	display:none;
-	position: absolute;
-	top: 100%;
-	right: 100px;
-	z-index: 1000;
-	float: right;
-	min-width: 160px;
-	padding: 5px 0;
-	margin: 2px 0 0;
-	list-style: none;
-	background-color: #ffffff;
-	border: 1px solid #ccc;
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	-moz-border-radius: 6px;
-	border-radius: 6px;
-	-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-	-moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-	-webkit-background-clip: padding-box;
-	-moz-background-clip: padding;
-	background-clip: padding-box;
-}
 .login-inputs{
 	margin:5px 10px 0px 10px;
 }
@@ -76,4 +53,8 @@ margin:0 auto;
 }
 .filter {
     width: 100%;
+}
+
+.filter_table_group {
+    float: right;
 }

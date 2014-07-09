@@ -3,17 +3,22 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.opencrash.mvc.Interceptor" %>
 <%@include file="../includes/header.jsp"%>
-
-
-<div class="span9" >
+<div>
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="/myaccount">My Account</a></li>
+        <li>Application</li>
+    </ol>
+</div>
+<div class="content row" >
     <%@include file="../includes/myaccount/applications.jsp"%>
-    <div class="span6">
+    <div class="col-sm-12 col-md-12 col-xs-12 col-lg-8 left">
         <table class="table">
             <thead>
             <tr>
-                <td>Date</td>
-                <td>Class</td>
-                <td>Message</td>
+                <td class="sorting_desc" sort="date">Date</td>
+                <td class="sorting" sort="class" >Class</td>
+                <td class="sorting" sort="message">Message</td>
             </tr>
             </thead>
             <tbody>
@@ -33,14 +38,14 @@
             <%
             Integer count =(Integer) request.getAttribute("count");
             Integer current_page = (Integer) request.getAttribute("page");
-            Integer prev_page = current_page-1;
-            Integer next_page = current_page+1;
-            if(count > 10){%>
-                <ul class="pagination">
-                    <li <%if(current_page.equals(1)){%>class="disabled"<%}%>><a href="<%if(prev_page<1){%>#<%}else{%>page-<%=prev_page%><%}%>">&laquo;</a></li>
-                    <li <%if(current_page.equals(count)){%>class="disabled"<%}%>><a href="<%if(next_page>count){%>#<%}else{%>page-<%=next_page%><%}%>">&raquo;</a></li>
-                </ul>
-            <%}%>
+            %>
+            <div class="pagination text-center">
+                <ul id="pagination" class="pagination-sm pagination"></ul>
+            </div>
     </div>
 </div>
+<script>
+    pagination(<%=count%>,<%=current_page%>,"<%=request.getAttribute("url").toString()%>");
+    order();
+</script>
 <%@include file="../includes/footer.jsp"%>

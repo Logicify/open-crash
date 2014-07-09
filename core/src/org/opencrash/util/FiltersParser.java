@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -54,7 +55,7 @@ public class FiltersParser {
                         params.put("date",f.get("date").toString());
                     }
                    filterObj.setDateParameters(params);
-               }else if(filter_type.equals("user")){
+               }else if(filter_type.equals("device")){
                     filterObj.setDeviceFilter(true);
                    JSONArray devices =(JSONArray) f.get("device");
                    List<Integer> list = new ArrayList<Integer>();
@@ -82,7 +83,7 @@ public class FiltersParser {
             }
             this.filterObject = filterObj;
         }catch (Exception e){
-
+            logger.log(Level.SEVERE,"Data error:",e);
         }
     }
     public FilterObject getFilters(){
@@ -99,12 +100,12 @@ public class FiltersParser {
             while (iterator.hasNext()) {
                 Object[] row = (Object[])iterator.next();
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id",row[2].toString());
-                jsonObject.put("exceptionClass",row[3].toString());
+                jsonObject.put("id",row[3].toString());
+                jsonObject.put("exceptionClass",row[1].toString());
                 jsonObject.put("count",row[0].toString());
-                jsonObject.put("date",row[1].toString());
+                jsonObject.put("date",row[2].toString());
                 jsonObject.put("appId",row[4].toString());
-                jsonObject.put("appName",row[5].toString());
+                jsonObject.put("deviceId",row[5].toString());
                 jsonArray.add(jsonObject);
             }
         }else
@@ -129,12 +130,16 @@ public class FiltersParser {
             column = "create_at";
         if(filed.equals("class"))
             column = "exc.id";
+        if(filed.equals("g_class"))
+            column = "exc.id";
         if(filed.equals("message"))
             column = "message";
         if(filed.equals("application"))
             column = "app.id";
         if(filed.equals("count"))
             column = "count";
+        if(filed.equals("device"))
+            column = "device";
         return column;
     }
 }

@@ -1,9 +1,18 @@
 <%@ page import="org.opencrash.domain_objects.ObtainedException" %>
 <%@include file="../includes/header.jsp"%>
-<div class="span9">
+<div>
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="/myaccount">My Account</a></li>
+        <li>Application</li>
+    </ol>
+</div>
+<div class="content row" >
+    <%@include file="../includes/myaccount/applications.jsp"%>
+
+<div class="col-lg-9">
     <% ObtainedException  exception = (ObtainedException) request.getAttribute("exception");%>
-    <div class="span3"><%=exception.getExceptionClass().getException_class()%></div>
-    <div class="span5"><%=exception.getMessage()%></div>
+    <div class="col-lg-9 text-center"><h1><%=exception.getExceptionClass().getException_class()%></h1></div>
     <div class="span5">
         <table class="table">
             <thead>
@@ -54,8 +63,23 @@
             </tbody>
         </table>
     </div>
-    <div class="span7">
-        <%=exception.getBacktrace()%>
+    <div class="span5">
+        <div class="bs-example bs-example-tabs">
+            <ul id="myTab" class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="#message" role="tab" data-toggle="tab">Message</a></li>
+                <li class=""><a href="#backtrace" role="tab" data-toggle="tab">Backtrace</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade active in" id="message">
+                    <%=exception.getMessage()%>
+                </div>
+                <div class="tab-pane fade" id="backtrace">
+                    <%=exception.getBacktrace()%>
+                </div>
+            </div>
+        </div>
+
     </div>
+</div>
 </div>
 <%@include file="../includes/footer.jsp"%>

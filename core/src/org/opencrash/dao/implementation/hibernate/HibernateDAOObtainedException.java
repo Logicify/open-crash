@@ -24,21 +24,29 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
         return ObtainedException.class;
     }
 
-    public List<ObtainedException> loadTopByApplicationId(int app_id){
+    public List<ObtainedException> loadTopByApplicationId(int app_id,String field,String type,Integer offset){
         List<ObtainedException> obtained_exceptions = null;
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            obtained_exceptions = session.createCriteria(getInnerClass())
+            Criteria criteria= session.createCriteria(getInnerClass())
                                          .createAlias("exceptionClass", "exceptionClass")
                                          .createAlias("application", "application")
                                          .add(Restrictions.eq("application.id", app_id))
                                          .setProjection(Projections.projectionList()
-                                                 .add(Projections.rowCount())
-                                                 .add(Projections.groupProperty("exceptionClass.id"))
+                                                 .add(Projections.rowCount(), "count")
+                                                 .add(Projections.groupProperty("exceptionClass.id"), "class")
                                                  .add(Projections.groupProperty("exceptionClass.exception_class"))
-                                         )
-                                         .list();
+                                         );
+            if(field == null){
+                criteria.addOrder(Order.desc("count"));
+            }else {
+                if(type.equals("desc"))
+                    criteria.addOrder(Order.desc(field));
+                else
+                    criteria.addOrder(Order.asc(field));
+            }
+            obtained_exceptions = criteria.setFirstResult(offset).setMaxResults(10).list();
         } catch (Exception e) {
             // throw new SQLException("Data error", e)
         } finally {
@@ -49,19 +57,56 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
         return obtained_exceptions;
     }
 
-    public List<ObtainedException> loadByIdAndAppId(Integer app_id,Integer exc_id,Integer offset){
+    public Integer countTopByApplicationId(int app_id){
         List<ObtainedException> obtained_exceptions = null;
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            obtained_exceptions= session.createCriteria(getInnerClass())
+            Criteria criteria= session.createCriteria(getInnerClass())
+                    .createAlias("exceptionClass", "exceptionClass")
+                    .createAlias("application", "application")
+                    .add(Restrictions.eq("application.id", app_id))
+                    .setProjection(Projections.projectionList()
+                            .add(Projections.rowCount(), "count")
+                            .add(Projections.groupProperty("exceptionClass.id"), "class")
+                            .add(Projections.groupProperty("exceptionClass.exception_class"))
+                    );
+            obtained_exceptions = criteria.setMaxResults(10).list();
+        } catch (Exception e) {
+            // throw new SQLException("Data error", e)
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return obtained_exceptions.size();
+    }
+
+    public List<ObtainedException> loadByIdAndAppId(Integer app_id,Integer exc_id,Integer offset,String type,String field){
+        List<ObtainedException> obtained_exceptions = null;
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            Criteria criteria= session.createCriteria(getInnerClass())
                                         .createAlias("application", "app")
                                         .add(Restrictions.eq("app.id", app_id))
                                         .createAlias("exceptionClass", "exc")
-                                        .add(Restrictions.eq("exc.id", exc_id))
-                                        .setFirstResult(offset)
-                                        .setMaxResults(10)
-                                        .list();
+                                        .add(Restrictions.eq("exc.id", exc_id));
+            if(field == null){
+                criteria.addOrder(Order.desc("create_at"));
+            }else {
+                if(field.equals("class"))
+                    field = "exc.id";
+                if(field.equals("date"))
+                    field = "create_at";
+                if(type.equals("desc"))
+                    criteria.addOrder(Order.desc(field));
+                else
+                    criteria.addOrder(Order.asc(field));
+            }
+            obtained_exceptions = criteria.setFirstResult(offset)
+                                          .setMaxResults(10)
+                                          .list();
         } catch (Exception e) {
             //
         } finally {
@@ -129,21 +174,27 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                 }
             }
             if(obj.isGrouping()){
-                ProjectionList projections = Projections.projectionList().add(Projections.rowCount(),"count")
-                        .add(Projections.min("create_at"))
-                        .add(Projections.min("exc.id"))
-                        .add(Projections.min("exc.exception_class"),"class")
-                        .add(Projections.min("app.id"));
-                for (int i=0;i<obj.getGroup_by().size();i++){
-                    if(obj.getGroup_by().get(i).equals("date"))
-                        projections.add(Projections.groupProperty("create_at"));
-                    else if (obj.getGroup_by().get(i).equals("exceptionClass"))
-                        projections.add(Projections.groupProperty("exc.id"));
-                    else if (obj.getGroup_by().get(i).equals("message"))
-                        projections.add(Projections.groupProperty("message"));
-                    else if (obj.getGroup_by().get(i).equals("application"))
-                        projections.add(Projections.groupProperty("app.id"));
-                }
+                ProjectionList projections = Projections.projectionList().add(Projections.rowCount(), "count").add(Projections.min("exc.exception_class"),"class");
+                List<String> group = obj.getGroup_by();
+                if(group.indexOf("date")== -1){
+                    projections.add(Projections.min("create_at"));
+                }else
+                    projections.add(Projections.groupProperty("create_at"));
+
+                if(group.indexOf("class")== -1){
+                    projections.add(Projections.min("exc.id"),"exc.id");
+                }else
+                    projections.add(Projections.groupProperty("exc.id"));
+
+                if(group.indexOf("application")== -1){
+                    projections.add(Projections.min("app.id"));
+                }else
+                    projections.add(Projections.groupProperty("app.id"));
+
+                if(group.indexOf("device")== -1){
+                    projections.add(Projections.min("dev.id"));
+                }else
+                    projections.add(Projections.groupProperty("dev.id"));
                 filter.setProjection(projections);
             }
             if(sorting_type.equals("asc")){
@@ -213,7 +264,8 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
             session = HibernateUtil.getSessionFactory().openSession();
             Criteria filter =session.createCriteria(getInnerClass())
                     .createAlias("exceptionClass", "exc")
-                    .createAlias("application", "app");
+                    .createAlias("application", "app")
+                    .createAlias("device", "dev");
             if(obj.isClassFilter()){
                 filter.add(Restrictions.in("exc.id", obj.getClassesId()));
             }
@@ -221,7 +273,7 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                 filter.add(Restrictions.in("app.id", obj.getApplicationsId()));
             }
             if(obj.isDeviceFilter()){
-                filter.add(Restrictions.in("uid", obj.getDevicesId()));
+                filter.add(Restrictions.in("dev.id",obj.getDevicesId()));
             }
             if(obj.isDateFilter()){
                 HashMap<String,String> params= obj.getDateParameters();
@@ -235,33 +287,36 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                 }else if(params.get("operation").equals("to")){
                     Date date = new SimpleDateFormat("yyyy/MM/dd").parse(params.get("date"));
                     filter.add(Restrictions.le("create_at", date));
-                }else if(params.get("operation").isEmpty()){
+                }else if(params.get("operation").equals("eq")){
                     Date date = new SimpleDateFormat("yyyy/MM/dd").parse(params.get("date"));
-                    filter.add(Restrictions.eq("create_at",date));
+                    filter.add(Restrictions.eq("create_at", date));
                 }
             }
             if(obj.isGrouping()){
-                ProjectionList projections = Projections.projectionList().add(Projections.min("id"))
-                        .add(Projections.min("message"),"message")
-                        .add(Projections.min("create_at"),"create_at")
-                        .add(Projections.min("exc.id"),"exc.id")
-                        .add(Projections.min("exc.exception_class"))
-                        .add(Projections.min("app.id"),"app.id")
-                        .add(Projections.min("app.name"));
-                for (int i=0;i<obj.getGroup_by().size();i++){
-                    if(obj.getGroup_by().get(i).equals("date"))
-                        projections.add(Projections.groupProperty("create_at"));
-                    else if (obj.getGroup_by().get(i).equals("exceptionClass"))
-                        projections.add(Projections.groupProperty("exc.id"));
-                    else if (obj.getGroup_by().get(i).equals("message"))
-                        projections.add(Projections.groupProperty("message"));
-                    else if (obj.getGroup_by().get(i).equals("application"))
-                        projections.add(Projections.groupProperty("app.id"));
-                }
+                ProjectionList projections = Projections.projectionList().add(Projections.rowCount(), "count").add(Projections.min("exc.exception_class"),"class");
+                List<String> group = obj.getGroup_by();
+                if(group.indexOf("date")== -1){
+                    projections.add(Projections.min("create_at"));
+                }else
+                    projections.add(Projections.groupProperty("create_at"));
+
+                if(group.indexOf("class")== -1){
+                    projections.add(Projections.min("exc.id"),"exc.id");
+                }else
+                    projections.add(Projections.groupProperty("exc.id"));
+
+                if(group.indexOf("application")== -1){
+                    projections.add(Projections.min("app.id"));
+                }else
+                    projections.add(Projections.groupProperty("app.id"));
+
+                if(group.indexOf("device")== -1){
+                    projections.add(Projections.min("dev.id"));
+                }else
+                    projections.add(Projections.groupProperty("dev.id"));
                 filter.setProjection(projections);
             }
-            total =filter
-                    .list().size();
+            total =filter.list().size();
         } catch (Exception e) {
             // throw new SQLException("Data error", e)
         } finally {

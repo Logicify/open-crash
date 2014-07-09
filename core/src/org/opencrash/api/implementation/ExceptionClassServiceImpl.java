@@ -5,6 +5,7 @@ import org.opencrash.dao.HibernateDAO;
 import org.opencrash.domain_objects.ExceptionClass;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +33,15 @@ public class ExceptionClassServiceImpl implements ExceptionClassService{
         } catch (Exception e) {
             logger.log(Level.SEVERE,"DB error:",e);
         }
+    }
+    public List<ExceptionClass> loadAll(){
+        List<ExceptionClass> exception_classes=null;
+        try {
+            exception_classes = HibernateDAO.getInstance().DAOExceptionClass().getAll();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE,"DB error:",e);
+        }
+        return exception_classes;
     }
 
 }
