@@ -40,9 +40,11 @@ public class Ajax {
             total_elements = ajaxService.getTotalElements(filterObject);
             grouping = filterObject.isGrouping();
         }catch (ApiExceptions e){
+
         }
+        int total=0;
         double total_pages = Math.ceil(total_elements/10);
-        return filtersParser.getResult(list,(int) total_pages+1,grouping);
+        return filtersParser.getResult(list,(int)total_pages+1,grouping);
     }
 
 }

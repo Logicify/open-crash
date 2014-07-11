@@ -100,12 +100,14 @@ public class FiltersParser {
             while (iterator.hasNext()) {
                 Object[] row = (Object[])iterator.next();
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id",row[3].toString());
-                jsonObject.put("exceptionClass",row[1].toString());
                 jsonObject.put("count",row[0].toString());
-                jsonObject.put("date",row[2].toString());
+                jsonObject.put("date",row[1].toString());
+                jsonObject.put("classId",row[2].toString());
+                jsonObject.put("className",row[3].toString());
                 jsonObject.put("appId",row[4].toString());
-                jsonObject.put("deviceId",row[5].toString());
+                jsonObject.put("appName",row[5].toString());
+                jsonObject.put("deviceId",row[6].toString());
+                jsonObject.put("deviceName",row[7].toString());
                 jsonArray.add(jsonObject);
             }
         }else
@@ -126,19 +128,17 @@ public class FiltersParser {
     }
     public String getSortField(String filed){
         String column=null;
-        if(filed.equals("date"))
+        if(filed.equals("date")||filed.equals("g_date"))
             column = "create_at";
-        if(filed.equals("class"))
-            column = "exc.id";
-        if(filed.equals("g_class"))
+        if(filed.equals("class")||filed.equals("g_class"))
             column = "exc.id";
         if(filed.equals("message"))
             column = "message";
-        if(filed.equals("application"))
+        if(filed.equals("application")||filed.equals("g_application"))
             column = "app.id";
         if(filed.equals("count"))
             column = "count";
-        if(filed.equals("device"))
+        if(filed.equals("device")||filed.equals("g_device"))
             column = "device";
         return column;
     }

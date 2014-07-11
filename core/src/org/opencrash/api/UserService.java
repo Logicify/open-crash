@@ -19,4 +19,6 @@ public interface UserService {
     public void updateUser(Register_user user);
 
     public List<Register_user> loadAll();
+
+    public Register_user getAdminUser(String username, String password);
 }

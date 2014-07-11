@@ -174,7 +174,7 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                 }
             }
             if(obj.isGrouping()){
-                ProjectionList projections = Projections.projectionList().add(Projections.rowCount(), "count").add(Projections.min("exc.exception_class"),"class");
+                ProjectionList projections = Projections.projectionList().add(Projections.rowCount(), "count");
                 List<String> group = obj.getGroup_by();
                 if(group.indexOf("date")== -1){
                     projections.add(Projections.min("create_at"));
@@ -182,19 +182,19 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                     projections.add(Projections.groupProperty("create_at"));
 
                 if(group.indexOf("class")== -1){
-                    projections.add(Projections.min("exc.id"),"exc.id");
+                    projections.add(Projections.min("exc.id"),"exc.id").add(Projections.min("exc.exception_class"),"class");
                 }else
-                    projections.add(Projections.groupProperty("exc.id"));
+                    projections.add(Projections.groupProperty("exc.id"),"exc.id").add(Projections.groupProperty("exc.exception_class"),"class");
 
                 if(group.indexOf("application")== -1){
-                    projections.add(Projections.min("app.id"));
+                    projections.add(Projections.min("app.id"),"app.id").add(Projections.min("app.name"),"app_name");
                 }else
-                    projections.add(Projections.groupProperty("app.id"));
+                    projections.add(Projections.groupProperty("app.id"),"app.id").add(Projections.groupProperty("app.name"),"app_name");
 
                 if(group.indexOf("device")== -1){
-                    projections.add(Projections.min("dev.id"));
+                    projections.add(Projections.min("dev.id"),"device").add(Projections.min("dev.name"),"app_name");
                 }else
-                    projections.add(Projections.groupProperty("dev.id"));
+                    projections.add(Projections.groupProperty("dev.id"),"device").add(Projections.groupProperty("dev.name"),"app_name");
                 filter.setProjection(projections);
             }
             if(sorting_type.equals("asc")){

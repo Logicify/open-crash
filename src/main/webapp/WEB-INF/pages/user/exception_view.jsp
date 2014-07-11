@@ -1,25 +1,26 @@
 <%@ page import="org.opencrash.domain_objects.ObtainedException" %>
 <%@include file="../includes/header.jsp"%>
+<% ObtainedException  exception = (ObtainedException) request.getAttribute("exception");%>
 <div>
     <ol class="breadcrumb">
         <li><a href="/">Home</a></li>
         <li><a href="/myaccount">My Account</a></li>
-        <li>Application</li>
+        <li><a href="/myaccount/application/<%=exception.getApplication().getId()%>"><%=exception.getApplication().getName()%></a></li>
+        <li><a href="/myaccount/application/<%=exception.getApplication().getId()%>/exception/list/<%=exception.getExceptionClass().getId()%>"><%=exception.getExceptionClass().getException_class()%></a></li>
+        <li class="active">View</li>
     </ol>
 </div>
 <div class="content row" >
     <%@include file="../includes/myaccount/applications.jsp"%>
 
 <div class="col-lg-9">
-    <% ObtainedException  exception = (ObtainedException) request.getAttribute("exception");%>
-    <div class="col-lg-9 text-center"><h1><%=exception.getExceptionClass().getException_class()%></h1></div>
-    <div class="span5">
+     <div class="span5">
         <table class="table">
-            <thead>
-                <th>Parameter</th>
-                <th>Value</th>
-            </thead>
             <tbody>
+            <tr>
+                <td>Exception class</td>
+                <td><%=exception.getExceptionClass().getException_class()%></td>
+            </tr>
                 <tr>
                     <td>Date</td>
                     <td><%=exception.getCreate_at()%></td>
@@ -60,21 +61,41 @@
                     <td>Uid</td>
                     <td><%=exception.getUid()%></td>
                 </tr>
+                <tr>
+                    <td>Device</td>
+                    <td><%=exception.getDevice().getName()%></td>
+                </tr>
             </tbody>
         </table>
     </div>
     <div class="span5">
-        <div class="bs-example bs-example-tabs">
-            <ul id="myTab" class="nav nav-tabs" role="tablist">
-                <li class="active"><a href="#message" role="tab" data-toggle="tab">Message</a></li>
-                <li class=""><a href="#backtrace" role="tab" data-toggle="tab">Backtrace</a></li>
-            </ul>
-            <div id="myTabContent" class="tab-content">
-                <div class="tab-pane fade active in" id="message">
-                    <%=exception.getMessage()%>
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse-message">
+                            Message
+                        </a>
+                    </h4>
                 </div>
-                <div class="tab-pane fade" id="backtrace">
-                    <%=exception.getBacktrace()%>
+                <div id="collapse-message" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <%=exception.getMessage()%>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse-backtrace">
+                            Backtrace
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse-backtrace" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <%=exception.getBacktrace()%>
+                    </div>
                 </div>
             </div>
         </div>

@@ -3,27 +3,29 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.opencrash.mvc.Interceptor" %>
 <%@include file="../includes/header.jsp"%>
-<div>
+<% ArrayList<ObtainedException> obtained_exceptions = (ArrayList<ObtainedException>) request.getAttribute("exceptions");
+ObtainedException breadcrumb = obtained_exceptions.get(0);%>
+    <div>
     <ol class="breadcrumb">
         <li><a href="/">Home</a></li>
         <li><a href="/myaccount">My Account</a></li>
-        <li>Application</li>
+        <li><a href="/myaccount/application/<%=breadcrumb.getApplication().getId()%>"><%=breadcrumb.getApplication().getName()%></a></li>
+        <li class="active"><%=breadcrumb.getExceptionClass().getException_class()%></li>
     </ol>
 </div>
 <div class="content row" >
     <%@include file="../includes/myaccount/applications.jsp"%>
-    <div class="col-sm-12 col-md-12 col-xs-12 col-lg-8 left">
+    <div class="col-sm-12 col-md-12 col-xs-12 col-lg-9 left">
         <table class="table">
             <thead>
             <tr>
-                <td class="sorting_desc" sort="date">Date</td>
+                <td class="sorting_desc" sort="date" style="width: 11%;">Date</td>
                 <td class="sorting" sort="class" >Class</td>
                 <td class="sorting" sort="message">Message</td>
             </tr>
             </thead>
             <tbody>
             <%
-                ArrayList<ObtainedException> obtained_exceptions = (ArrayList<ObtainedException>) request.getAttribute("exceptions");
                 if(obtained_exceptions != null){
                     for (int i = 0; i < obtained_exceptions.size(); i++) {
             %>

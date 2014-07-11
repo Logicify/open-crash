@@ -98,9 +98,15 @@
                         </li>
                     </ul>
                 </li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search">
+                <button type="button" id="form_submit" class="btn btn-default">Submit</button>
+                <button type="button" id="form_reset" class="btn btn-default">Reset</button>
+            </form>
+            <ul class="nav navbar-nav p_right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Grouping<span class="caret"></span></a>
-                    <ul class="dropdown-menu filter" role="menu">
+                    <ul class="dropdown-menu filter grouping_right" role="menu">
                         <li>
                             <select id="grouping" class="multiselect" multiple="multiple">
                                 <option value="class">Exception Class</option>
@@ -112,10 +118,6 @@
                     </ul>
                 </li>
             </ul>
-            <form class="navbar-form navbar-left" role="search">
-                <button type="button" id="form_submit" class="btn btn-default">Submit</button>
-                <button type="button" id="form_reset" class="btn btn-default">Reset</button>
-            </form>
         </div>
     </nav>
 </div>
@@ -124,10 +126,10 @@
         <table id="filter_table" class="display" cellspacing="0" width="100%">
             <thead>
             <tr>
-                <th class="sorting_desc" sort="date">Date</th>
-                <th class="sorting" sort="class">Exception Class</th>
-                <th class="sorting" sort="application">Application</th>
-                <th class="sorting" sort="message">Message</th>
+                <th class="sorting_desc filter_sort" sort="date">Date</th>
+                <th class="sorting filter_sort" sort="class" style="max-width: 200px">Exception Class</th>
+                <th class="sorting filter_sort" sort="application">Application</th>
+                <th class="sorting filter_sort" sort="message">Message</th>
             </tr>
             </thead>
         </table>
@@ -139,13 +141,19 @@
     <div class="filter_t_group">
         <table id="filter_table_group" class="display" cellspacing="0" width="100%">
             <thead>
-            <tr>
-                <th>Group by</th>
-                <th class="sorting" sort="g_class">Exception Class</th>
-                <th class="sorting_desc" sort="count">Count</th>
-            </tr>
+                <tr>
+                    <th class="sorting group_sort" sort="g_class">Exception Class</th>
+                    <th class="sorting group_sort" sort="g_date">Date</th>
+                    <th class="sorting group_sort" sort="g_application">Application</th>
+                    <th class="sorting group_sort" sort="g_device">Device</th>
+                    <th class="sorting_desc group_sort" sort="count">Count</th>
+                </tr>
             </thead>
         </table>
+        <div class="panel panel-default group-panel">
+            <div class="panel-heading">Grouping by:<span class='group'></span></div>
+        </div>
+        </div>
         <div class="pagination pagination-center">
             <ul id="pagination_ft" class="pagination-sm pagination"></ul>
         </div>

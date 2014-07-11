@@ -6,6 +6,7 @@ package org.opencrash.domain_objects;
 public class AuthUser {
     String username = "";
     String error = "";
+    boolean admin;
     Integer user_id;
     boolean loginflag = false;
 
@@ -52,5 +53,12 @@ public class AuthUser {
         this.user_id = user_id;
     }
 
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
 }
 

@@ -1,25 +1,21 @@
 package com.opencrash.mvc;
 
-import org.junit.Test;
-import org.opencrash.api.ExceptionClassService;
-import org.opencrash.domain_objects.ExceptionClass;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
-
 /**
  * Created by Fong on 19.06.14.
  */
-@ContextConfiguration("classpath:testContext.xml")
-public class ApiTest extends AbstractTransactionalJUnit4SpringContextTests {
+//@ContextConfiguration("classpath:test-beans.xml")
+//@TransactionConfiguration(defaultRollback=false)
+public class ApiTest{// extends AbstractTestNGSpringContextTests {
+    /*@Autowired
+    /public ExceptionClassService exceptionClassService;
+
     @Autowired
-    public ExceptionClassService exceptionClassService;
+    private IDatabaseTester databaseTester;
 
-    @Test
-    public void testCreate() {
-        ExceptionClass exceptionClass = new ExceptionClass();
-        exceptionClass.setException_class("1");
-        exceptionClassService.AddNewClass(exceptionClass);
-
-    }
+    @BeforeTransaction
+    protected void setUp() throws Exception {
+        databaseTester.setSetUpOperation(DatabaseOperation.CLEAN_INSERT);
+        databaseTester.setTearDownOperation(DatabaseOperation.NONE);
+        databaseTester.onSetup();
+    }*/
 }

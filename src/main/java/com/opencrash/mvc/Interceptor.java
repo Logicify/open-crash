@@ -20,10 +20,12 @@ public class Interceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
         AuthUser authUser = (AuthUser) session.getAttribute("userInfo");
+
         if (authUser == null){
             authUser = new AuthUser();
             request.setAttribute("user","logged-out");
         }
+
         if(authUser.IsLogin().equals("true")){
             request.setAttribute("user","logged-in");
             if(request.getRequestURI().startsWith("/myaccount"))

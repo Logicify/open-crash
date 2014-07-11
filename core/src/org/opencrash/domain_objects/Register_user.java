@@ -14,6 +14,7 @@ public class Register_user extends IdentifiableEntity {
     private String email;
     private String password;
     private boolean activate;
+    private boolean admin;
     private Set<Application> applications = new HashSet<Application>(0);
 
     @Column(name = "username",length = 25,unique = false)
@@ -57,5 +58,14 @@ public class Register_user extends IdentifiableEntity {
 
     public void setApplications(Set<Application> applications) {
         this.applications = applications;
+    }
+
+    @Column(name = "admin")
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 }

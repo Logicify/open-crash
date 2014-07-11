@@ -1,0 +1,36 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:component-scan base-package="com.opencrash.mvc"/>
+    <mvc:annotation-driven/>
+    <mvc:resources location="/resources/css/" mapping="/css/**"/>
+    <mvc:resources location="/resources/js/" mapping="/js/**"/>
+    <mvc:resources location="/resources/img/" mapping="/img/**"/>
+    <mvc:resources location="resources/config/" mapping="/config/**"/>
+    <mvc:interceptors>
+        <bean class="com.opencrash.mvc.Interceptor"/>
+    </mvc:interceptors>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager"/>
+    <bean class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean" id="contentNegotiationManager">
+    <property value="false" name="favorPathExtension"/>
+
+    </bean>
+        <bean class="org.opencrash.api.implementation.ApplicationServiceImpl" id="applicationService"/>
+        <bean class="org.opencrash.api.implementation.HandlerServiceImpl" id="handlerService"/>
+        <bean class="org.opencrash.api.implementation.SystemServiceImpl" id="systemService"/>
+        <bean class="org.opencrash.api.implementation.ExceptionClassServiceImpl" id="exceptionClassService"/>
+        <bean class="org.opencrash.api.implementation.ObtainedExceptionServiceImpl" id="obtainedExceptionService"/>
+        <bean class="org.opencrash.api.implementation.AjaxServiceImpl" id="ajaxService"/>
+        <bean class="org.opencrash.api.implementation.DeviceServiceImpl" id="deviceService"/>
+        <bean class="org.opencrash.api.implementation.UserServiceImpl" id="userService"/>
+    </beans>
+

@@ -68,4 +68,14 @@ public class UserServiceImpl implements UserService {
         }
         return users;
     }
+
+    public Register_user getAdminUser(String username, String password){
+        Register_user admin=null;
+        try {
+            admin =HibernateDAO.getInstance().DAOUser().getAdminForLogin(username,password);
+        }catch (SQLException e){
+            logger.log(Level.SEVERE, "DB error:", e);
+        }
+        return admin;
+    }
 }

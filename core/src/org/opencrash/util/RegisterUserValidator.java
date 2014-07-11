@@ -11,14 +11,15 @@ import java.util.Map;
  * Created by Fong on 14.05.14.
  */
 public class RegisterUserValidator extends Validator {
-    String username;
-    String password;
-    String check_password;
-    boolean valid = false;
-    boolean email_check = true;
-    boolean name_check = true;
-    boolean pass_check = true;
-    String email; Map<String, String> errors = new HashMap<String, String>();
+    private String username;
+    private String password;
+    private String check_password;
+    private boolean valid = false;
+    private boolean email_check = true;
+    private boolean name_check = true;
+    private boolean pass_check = true;
+    private String email;
+    private Map<String, String> errors = new HashMap<String, String>();
 
 
     public RegisterUserValidator(String username, String password,String check_password, String email) {
