@@ -15,4 +15,8 @@ public interface SystemService {
     public MobileSystem getById(Integer system_id);
 
     public List<MobileSystem> loadAll();
+
+    public void saveEdit(MobileSystem system);
+
+    public void deleteSystem(MobileSystem system);
 }

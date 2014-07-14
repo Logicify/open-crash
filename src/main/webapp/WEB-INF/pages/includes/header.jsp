@@ -58,6 +58,9 @@
                             <li><a href="/registration">SIGNUP</a></li>
                             <%}else{%>
                             <li><a href="/myaccount">My account</a></li>
+                                <%if(request.getAttribute("admin").equals("true")){%>
+                                    <li><a href="/backend/settings/pagination">Settings</a></li>
+                                <%}%>
                             <li><a href="/log-out">Log out</a></li>
                             <%}%>
                         </ul>

@@ -21,6 +21,9 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
             </props>
         </property>
     </bean>
+    <bean class="org.opencrash.util.Settings">
+        <property name="path" value="classpath:/settings.json" />
+    </bean>
 
 
 </beans>

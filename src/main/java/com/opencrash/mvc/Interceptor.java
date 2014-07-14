@@ -24,15 +24,20 @@ public class Interceptor extends HandlerInterceptorAdapter {
         if (authUser == null){
             authUser = new AuthUser();
             request.setAttribute("user","logged-out");
+            request.setAttribute("admin","false");
         }
 
         if(authUser.IsLogin().equals("true")){
+            if(authUser.isAdmin())
+                request.setAttribute("admin","true");
+            else
+                request.setAttribute("admin","true");
+
             request.setAttribute("user","logged-in");
             if(request.getRequestURI().startsWith("/myaccount"))
                 request.setAttribute("apps",applicationService.loadApplicationByUser(authUser.getUser_id()));
         }else
             request.setAttribute("user","logged-out");
-
         return super.preHandle(request, response, handler);
     }
 

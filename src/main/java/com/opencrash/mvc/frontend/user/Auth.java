@@ -92,6 +92,8 @@ public class Auth {
                     return "redirect:/registration/confirm/"+register_user.getId();
                 }else{
                     authUser.Login(register_user.getUsername(),register_user.getId());
+                    if(register_user.isAdmin())
+                        authUser.setAdmin(true);
                     session.setAttribute("userInfo",authUser);
                     return "redirect:/";
                 }

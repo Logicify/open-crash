@@ -9,6 +9,6 @@ import java.util.List;
  * Created by Fong on 19.06.14.
  */
 public interface AjaxService {
-    public List<ObtainedException> loadByFilters( FilterObject obj,Integer offset,String sorting_field, String sorting_type);
+    public List<ObtainedException> loadByFilters( FilterObject obj,Integer offset,String sorting_field, String sorting_type,Integer limit);
     public Integer getTotalElements(FilterObject filterObject);
 }

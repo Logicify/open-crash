@@ -17,10 +17,10 @@ import java.util.logging.Logger;
 public class AjaxServiceImpl implements AjaxService {
     Logger logger = Logger.getLogger(AjaxService.class.getName());
 
-    public List<ObtainedException> loadByFilters( FilterObject obj,Integer offset,String sorting_field,String sorting_type){
+    public List<ObtainedException> loadByFilters( FilterObject obj,Integer offset,String sorting_field,String sorting_type,Integer limit){
         List<ObtainedException> obtainedExceptions=null;
         try {
-            obtainedExceptions = HibernateDAO.getInstance().DAOObtainedException().loadByFilters(obj,offset,sorting_field,sorting_type);
+            obtainedExceptions = HibernateDAO.getInstance().DAOObtainedException().loadByFilters(obj,offset,sorting_field,sorting_type,limit);
         } catch (Exception e) {
             logger.log(Level.SEVERE,"DB error:",e);
         }

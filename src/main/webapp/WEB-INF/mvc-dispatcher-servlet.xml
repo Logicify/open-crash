@@ -11,7 +11,8 @@
     <mvc:resources location="/resources/css/" mapping="/css/**"/>
     <mvc:resources location="/resources/js/" mapping="/js/**"/>
     <mvc:resources location="/resources/img/" mapping="/img/**"/>
-    <mvc:resources location="resources/config/" mapping="/config/**"/>
+    <mvc:resources location="/resources/fonts/" mapping="/fonts/**"/>
+    <mvc:resources location="/resources/config/" mapping="/config/**"/>
     <mvc:interceptors>
         <bean class="com.opencrash.mvc.Interceptor"/>
     </mvc:interceptors>

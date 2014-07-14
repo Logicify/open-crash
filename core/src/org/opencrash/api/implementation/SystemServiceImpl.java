@@ -27,7 +27,11 @@ public class SystemServiceImpl implements SystemService{
         return mobileSystem;
     }
     public void addNewSystem(MobileSystem mobileSystem){
-
+        try {
+            HibernateDAO.getInstance().DAOSystem().add(mobileSystem);
+            }catch (SQLException e){
+                logger.log(Level.SEVERE,"DB error",e);
+        }
     }
     public MobileSystem getById(Integer system_id){
         MobileSystem mobileSystem = null;
@@ -48,5 +52,18 @@ public class SystemServiceImpl implements SystemService{
         }
         return list;
     }
-
+    public void saveEdit(MobileSystem system){
+        try{
+            HibernateDAO.getInstance().DAOSystem().update(system);
+        }catch (SQLException e){
+            logger.log(Level.SEVERE,"DB error",e);
+        }
+    }
+    public void deleteSystem(MobileSystem system){
+        try{
+            HibernateDAO.getInstance().DAOSystem().remove(system);
+        }catch (SQLException e){
+            logger.log(Level.SEVERE,"DB error",e);
+        }
+    }
 }

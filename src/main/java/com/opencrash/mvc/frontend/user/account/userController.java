@@ -6,6 +6,7 @@ import org.opencrash.api.implementation.UserServiceImpl;
 import org.opencrash.domain_objects.*;
 import org.opencrash.util.ApplicationValidator;
 import org.opencrash.util.Security;
+import org.opencrash.util.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -34,6 +35,7 @@ public class userController {
     DeviceService deviceService;
     @Autowired
     ExceptionClassService exceptionClassService;
+
     @RequestMapping(value="/myaccount",method = RequestMethod.GET)
     public String getMyAccount(ModelMap model,HttpServletRequest request){
         HttpSession session = request.getSession();
@@ -105,11 +107,15 @@ public class userController {
         String type = request.getParameter("sorting_type");
         String field = request.getParameter("sorting_field");
         Integer offset =0;
-        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionByApplication(applicationId,field,type,offset);
+        Settings settings = new Settings();
+        settings.getSettings();
+        Integer limit = Integer.parseInt(settings.getPagination());
+        settings.getSettings();
+        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionByApplication(applicationId,field,type,offset,limit);
         Integer count = obtainedExceptionService.countTopByApplicationId(applicationId);
         model.put("applicationId",applicationId);
         model.put("top_exceptions",obtained_exceptions);
-        double total_pages = Math.ceil(count/10);
+        double total_pages = Math.ceil(count/limit);
         model.put("count",(int) total_pages+1);
         model.put("url","/myaccount/application/"+applicationId);
         model.put("page",1);
@@ -130,12 +136,15 @@ public class userController {
         ObtainedExceptionService obtainedExceptionService = new ObtainedExceptionServiceImpl();
         String type = request.getParameter("sorting_type");
         String field = request.getParameter("sorting_field");
-        Integer offset = (page - 1) * 10;
-        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionByApplication(applicationId,field,type,offset);
+        Settings settings = new Settings();
+        settings.getSettings();
+        Integer limit = Integer.parseInt(settings.getPagination());
+        Integer offset = (page - 1) * limit;
+        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionByApplication(applicationId,field,type,offset,limit);
         Integer count = obtainedExceptionService.countTopByApplicationId(applicationId);
         model.put("applicationId",applicationId);
         model.put("top_exceptions",obtained_exceptions);
-        double total_pages = Math.ceil(count/10);
+        double total_pages = Math.ceil(count/limit);
         model.put("count",(int) total_pages+1);
         model.put("url","/myaccount/application/"+applicationId);
         model.put("page",page);
@@ -154,9 +163,12 @@ public class userController {
         Integer page_count = obtainedExceptionService.getCount(applicationId,exception_id);
         String type = request.getParameter("sorting_type");
         String field = request.getParameter("sorting_field");
-        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionsByAppIdAndExId(applicationId,exception_id,0,type,field);
+        Settings settings = new Settings();
+        settings.getSettings();
+        Integer limit = Integer.parseInt(settings.getPagination());
+        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionsByAppIdAndExId(applicationId,exception_id,0,type,field,limit);
         model.put("exceptions",obtained_exceptions);
-        double total_pages = Math.ceil(page_count/10);
+        double total_pages = Math.ceil(page_count/limit);
         model.put("count",(int) total_pages+1);
         model.put("url","/myaccount/application/"+applicationId+"/exception/list/"+exception_id);
         model.put("page",1);
@@ -171,14 +183,16 @@ public class userController {
             authUser = new AuthUser();
         if (authUser.IsLogin().equals("false"))
             return "redirect:/login";
-        ObtainedExceptionService obtainedExceptionService = new ObtainedExceptionServiceImpl();
-        int offset = (page - 1) * 10;
         String type = request.getParameter("sorting_type");
         String field = request.getParameter("sorting_field");
-        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionsByAppIdAndExId(applicationId,exception_id,offset,type,field);
+        Settings settings = new Settings();
+        settings.getSettings();
+        Integer limit = Integer.parseInt(settings.getPagination());
+        int offset = (page - 1) * limit;
+        List<ObtainedException> obtained_exceptions = obtainedExceptionService.getExceptionsByAppIdAndExId(applicationId,exception_id,offset,type,field,limit);
         Integer page_count = obtainedExceptionService.getCount(applicationId,exception_id);
         model.put("exceptions",obtained_exceptions);
-        double total_pages = Math.ceil(page_count/10);
+        double total_pages = Math.ceil(page_count/limit);
         model.put("count",(int) total_pages+1);
         model.put("url","/myaccount/application/"+applicationId+"/exception/list/"+exception_id);
         model.put("page",page);

@@ -152,3 +152,16 @@ body{color:#444444;background:url(../img/bg.jpg);}
         right:-59%;
     }
 }
+
+.admin-edit {
+    float: right;
+    padding-right: 5px;
+}
+.admin-delete{
+    float: right;
+    padding-right: 10px;
+}
+
+.admin-systems {
+    margin-bottom: 10px;
+}

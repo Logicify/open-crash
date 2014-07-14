@@ -24,7 +24,7 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
         return ObtainedException.class;
     }
 
-    public List<ObtainedException> loadTopByApplicationId(int app_id,String field,String type,Integer offset){
+    public List<ObtainedException> loadTopByApplicationId(int app_id,String field,String type,Integer offset,Integer limit){
         List<ObtainedException> obtained_exceptions = null;
         Session session = null;
         try {
@@ -46,7 +46,7 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                 else
                     criteria.addOrder(Order.asc(field));
             }
-            obtained_exceptions = criteria.setFirstResult(offset).setMaxResults(10).list();
+            obtained_exceptions = criteria.setFirstResult(offset).setMaxResults(limit).list();
         } catch (Exception e) {
             // throw new SQLException("Data error", e)
         } finally {
@@ -82,7 +82,7 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
         return obtained_exceptions.size();
     }
 
-    public List<ObtainedException> loadByIdAndAppId(Integer app_id,Integer exc_id,Integer offset,String type,String field){
+    public List<ObtainedException> loadByIdAndAppId(Integer app_id,Integer exc_id,Integer offset,String type,String field,Integer limit){
         List<ObtainedException> obtained_exceptions = null;
         Session session = null;
         try {
@@ -105,7 +105,7 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                     criteria.addOrder(Order.asc(field));
             }
             obtained_exceptions = criteria.setFirstResult(offset)
-                                          .setMaxResults(10)
+                                          .setMaxResults(limit)
                                           .list();
         } catch (Exception e) {
             //
@@ -138,7 +138,7 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
         return count;
     }
 
-    public List<ObtainedException> loadByFilters(FilterObject obj,Integer offset,String sorting_field, String sorting_type) {
+    public List<ObtainedException> loadByFilters(FilterObject obj,Integer offset,String sorting_field, String sorting_type,Integer limit) {
         List<ObtainedException> obtained_exceptions = null;
         Session session = null;
         try {
@@ -203,7 +203,7 @@ public class HibernateDAOObtainedException extends HibernateDAOIdentifiable<Obta
                 filter.addOrder(Order.desc(sorting_field));
 
             obtained_exceptions =filter
-                    .setMaxResults(10)
+                    .setMaxResults(limit)
                     .setFirstResult(offset)
                     .list();
         } catch (Exception e) {

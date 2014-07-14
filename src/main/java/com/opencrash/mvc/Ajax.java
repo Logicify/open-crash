@@ -5,6 +5,7 @@ import org.opencrash.domain_objects.FilterObject;
 import org.opencrash.domain_objects.ObtainedException;
 import org.opencrash.util.ApiExceptions;
 import org.opencrash.util.FiltersParser;
+import org.opencrash.util.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,8 +36,11 @@ public class Ajax {
         try {
             filtersParser.Parse();
             FilterObject filterObject = filtersParser.getFilters();
-            Integer offset = (page-1) * 10;
-            list = ajaxService.loadByFilters(filterObject,offset,filtersParser.getSortField(sorting_field),sorting_type);
+            Settings settings = new Settings();
+            settings.getSettings();
+            Integer limit = Integer.parseInt(settings.getPagination());
+            Integer offset = (page-1) * limit;
+            list = ajaxService.loadByFilters(filterObject,offset,filtersParser.getSortField(sorting_field),sorting_type,limit);
             total_elements = ajaxService.getTotalElements(filterObject);
             grouping = filterObject.isGrouping();
         }catch (ApiExceptions e){

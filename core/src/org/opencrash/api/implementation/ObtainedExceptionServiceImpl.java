@@ -23,10 +23,10 @@ public class ObtainedExceptionServiceImpl implements ObtainedExceptionService {
             logger.log(Level.SEVERE,"DB error:",e);
         }
     }
-    public List<ObtainedException> getExceptionByApplication(Integer app_id,String field,String type,Integer offset){
+    public List<ObtainedException> getExceptionByApplication(Integer app_id,String field,String type,Integer offset,Integer limit){
         List<ObtainedException> obtained_exceptions = null;
         try {
-            obtained_exceptions =HibernateDAO.getInstance().DAOObtainedException().loadTopByApplicationId(app_id,field,type,offset);
+            obtained_exceptions =HibernateDAO.getInstance().DAOObtainedException().loadTopByApplicationId(app_id,field,type,offset,limit);
 
         }catch (Exception e){
             logger.log(Level.SEVERE,"DB error:",e);
@@ -44,10 +44,10 @@ public class ObtainedExceptionServiceImpl implements ObtainedExceptionService {
         return count;
     }
 
-    public List<ObtainedException> getExceptionsByAppIdAndExId(Integer app_id,Integer exc_id,Integer offset,String type,String field){
+    public List<ObtainedException> getExceptionsByAppIdAndExId(Integer app_id,Integer exc_id,Integer offset,String type,String field,Integer limit){
         List<ObtainedException> obtained_exceptions = null;
         try {
-            obtained_exceptions =HibernateDAO.getInstance().DAOObtainedException().loadByIdAndAppId(app_id,exc_id,offset,type,field);
+            obtained_exceptions =HibernateDAO.getInstance().DAOObtainedException().loadByIdAndAppId(app_id,exc_id,offset,type,field,limit);
 
         }catch (Exception e){
             logger.log(Level.SEVERE,"DB error:",e);
